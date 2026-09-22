@@ -1,0 +1,1184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yugen — from the centre of the Earth to the edge of the universe</title>
+<meta name="description" content="Yugen: start at the surface of the sea. Scroll up through the sky to the edge of the universe, or down through the ocean to the centre of the Earth.">
+<meta name="theme-color" content="#0b4776">
+<meta name="apple-mobile-web-app-title" content="Yugen">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<style>
+/* One committed visual world: the page colour is the sea/sky itself, painted by WebGL.
+   Surfaces are dark glass so text reads the same at every altitude and depth. */
+:root {
+  --bg: #0b4776;                 /* updated live from the depth ramp; WebGL fallback */
+  --glass: rgba(5, 16, 28, 0.78);
+  --glass-strong: rgba(4, 12, 22, 0.94);
+  --line: rgba(190, 228, 245, 0.22);
+  --ink: #e8f3f6;
+  --ink-soft: #a9c3cd;
+  --ink-faint: #6f8d99;
+  --signal: #ff8a3d;             /* ROV / survey-buoy orange */
+  --signal-ink: #1a0c02;
+  --readout: #7fe6ff;
+  --deadly: #ff5364;
+  --injure: #ffb547;
+  --hazard: #d7d36a;
+  --surface-ink: #0b2a44;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Newsreader", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* entries sit well out from the spine: the gap grows with the viewport, while the outer
+     edge stays clear of the HUD (left) and journey map (right) */
+  --card-w: clamp(300px, 25vw, 430px);
+  --side: 300px;
+  --gutter: clamp(56px, calc(50vw - var(--card-w) - var(--side)), 240px);
+}
+html { scroll-behavior: auto; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+#sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; }
+#world { position: relative; z-index: 1; width: 100%; overflow-x: clip; } /* feathered edges may bleed; never widen the page */
+
+/* ---------- ruler ---------- */
+.ruler { position: absolute; left: 50%; width: 1px; background: var(--line); transform: translateX(-0.5px); }
+.tick { position: absolute; left: 50%; transform: translate(-50%, -50%);
+  font: 500 11px/1 var(--mono); letter-spacing: .04em; color: var(--ink-soft);
+  background: rgba(3, 10, 18, .55); border: 1px solid var(--line); padding: 3px 7px; border-radius: 99px; white-space: nowrap; }
+
+/* ---------- sea level hero ---------- */
+.sea { position: absolute; left: 0; right: 0; padding-inline: 16px; text-align: center; pointer-events: none; }
+.sea > * { pointer-events: auto; }
+.sea-above { position: absolute; left: 0; right: 0; bottom: 100%; padding-bottom: 60px; padding-inline: 16px; color: var(--surface-ink); }
+.sea-above .eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; margin: 0 auto 14px; max-width: none; }
+.sea-above h1 { font: 900 clamp(64px, 13vw, 168px)/.82 var(--display); letter-spacing: -.01em; margin: 0; text-transform: uppercase; text-wrap: balance; }
+.sea-above .say { font: 500 12px/1.6 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: rgba(11, 42, 68, .72); margin: 16px auto 0; max-width: 44ch; }
+.sea-above p { font-size: 19px; max-width: 34ch; margin: 18px auto 0; text-wrap: balance; }
+.sea-below { padding-top: 40px; }
+.sea-below p { color: #d8f1f8; margin: 0 auto 20px; max-width: 40ch; font-size: 17px; text-wrap: balance; }
+.go-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.go { font: 800 18px/1 var(--display); letter-spacing: .08em; text-transform: uppercase;
+  padding: 14px 22px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; }
+.go.up { background: #fff; color: var(--surface-ink); }
+.go.down { background: var(--signal); color: var(--signal-ink); }
+.go:hover { filter: brightness(1.08); }
+.go:focus-visible, button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--readout); outline-offset: 3px; }
+
+/* ---------- zone headers ---------- */
+.zone { position: absolute; left: 0; right: 0; text-align: center; padding-inline: 16px; }
+.zone h2 { display: inline-block; font: 800 clamp(34px, 5vw, 56px)/.95 var(--display); text-transform: uppercase; letter-spacing: .02em;
+  margin: 0; padding: 4px 18px 6px; background: var(--bg-zone, transparent); text-shadow: 0 2px 18px rgba(0,0,0,.45); }
+.zone p { font: 500 13px/1.45 var(--mono); color: var(--ink-soft); margin: 8px auto 0; max-width: 52ch; letter-spacing: .02em; text-shadow: 0 1px 8px rgba(0,0,0,.6); }
+.zone.light h2 { color: var(--surface-ink); text-shadow: none; }
+.zone.light p { color: #1d4665; text-shadow: none; }
+
+/* ---------- entries: borderless, feathered into the sky/sea ---------- */
+.card { position: absolute; width: var(--card-w); color: var(--ink); --f: 1; --scrim: rgba(2, 9, 16, .5);
+  --c-meta: var(--readout); --c-soft: var(--ink-soft); --c-faint: var(--ink-faint); --c-act: var(--signal); --shadow: rgba(0, 0, 0, .65); }
+.card.L { right: calc(50% + var(--gutter)); --drift: -44px; text-align: right; }
+.card.R { left: calc(50% + var(--gutter)); --drift: 44px; }
+.card.lite { color: var(--surface-ink); --scrim: rgba(226, 243, 251, .4); --c-meta: #0a4f80; --c-soft: #2a5676;
+  --c-faint: #4a7593; --c-act: #b0460a; --shadow: rgba(255, 255, 255, .5); }
+.card.d3 { --c-pin: var(--deadly); }
+
+/* leader line from the spine; it draws itself as the entry comes into focus */
+.card .pin { position: absolute; top: 20px; height: 1px; width: var(--gutter); pointer-events: none; }
+.card.L .pin { left: 100%; }
+.card.R .pin { right: 100%; }
+.card .pin::before { content: ""; position: absolute; inset: 0; transform: scaleX(var(--f));
+  background: linear-gradient(90deg, var(--c-pin, var(--readout)), transparent); opacity: .7; }
+.card.L .pin::before { transform-origin: right; }
+.card.R .pin::before { transform-origin: left; background: linear-gradient(270deg, var(--c-pin, var(--readout)), transparent); }
+.card .pin i { position: absolute; top: -5px; width: 11px; height: 11px; border-radius: 50%; box-sizing: border-box;
+  border: 1.5px solid var(--c-pin, var(--readout)); background: rgba(3, 10, 18, .6); transition: background .4s, box-shadow .4s; }
+.card.L .pin i { right: -5.5px; }
+.card.R .pin i { left: -5.5px; }
+.card.found .pin i { background: var(--c-pin, var(--readout)); box-shadow: 0 0 12px var(--c-pin, var(--readout)); }
+@property --scan { syntax: "<number>"; inherits: false; initial-value: 0; }
+.card .pin i::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; opacity: 0; --scan: 0;
+  background: conic-gradient(var(--c-pin, var(--readout)) calc(var(--scan) * 1turn), transparent 0);
+  -webkit-mask: radial-gradient(closest-side, transparent 72%, #000 76%); mask: radial-gradient(closest-side, transparent 72%, #000 76%); }
+.card.scanning .pin i::after { opacity: 1; animation: scan var(--scan-ms, 650ms) linear forwards; }
+@keyframes scan { to { --scan: 1; } }
+.card .pin i::before { content: ""; position: absolute; inset: -1px; border-radius: 50%; border: 2px solid var(--c-pin, var(--readout)); opacity: 0; }
+.card.just .pin i::before { animation: ping 1.1s ease-out 2; }
+@keyframes ping { from { transform: scale(1); opacity: .9; } to { transform: scale(5); opacity: 0; } }
+
+.wrap { opacity: calc(.14 + .86 * var(--f)); transform: translate3d(calc((1 - var(--f)) * var(--drift)), 0, 0); will-change: transform, opacity; }
+
+.meta { display: flex; align-items: baseline; gap: 10px; margin: 0; padding-top: 10px;
+  font: 500 15px/1.2 var(--mono); color: var(--c-meta); font-variant-numeric: tabular-nums; text-shadow: 0 1px 10px var(--shadow); }
+.card.L .meta { flex-direction: row-reverse; }
+.meta .alt { color: var(--c-faint); font-size: 12px; }
+.meta .st { font: 500 10px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--c-faint); white-space: nowrap; transition: color .4s; }
+.card.R .meta .st { margin-left: auto; }
+.card.L .meta .st { margin-right: auto; }
+.card.found .meta .st { color: var(--c-meta); }
+.card.studied .meta .st { color: var(--c-act); }
+
+/* the photo has no frame: its edges dissolve, and it blooms open on hover */
+.ph { margin: 4px 0 0; aspect-ratio: 16 / 10; position: relative; cursor: zoom-in; overflow: hidden;
+  --m: radial-gradient(ellipse 50% 50% at 50% 50%, #000 52%, rgba(0,0,0,.55) 76%, transparent 100%);
+  -webkit-mask-image: var(--m); mask-image: var(--m); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: center; mask-position: center; -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+  transform: perspective(900px) rotateX(calc(var(--my, 0) * -3deg)) rotateY(calc(var(--mx, 0) * 4deg));
+  transition: transform .5s cubic-bezier(.2, .7, .2, 1), -webkit-mask-size .7s cubic-bezier(.2, .7, .2, 1), mask-size .7s cubic-bezier(.2, .7, .2, 1); }
+.card.L .ph { margin-left: -14%; }
+.card.R .ph { margin-right: -14%; }
+.card:hover .ph { -webkit-mask-size: 135% 135%; mask-size: 135% 135%; }
+.ph img { width: 100%; height: 100%; object-fit: cover; display: block;
+  transform: scale(1.1) translate(calc(var(--mx, 0) * -2.5%), calc(var(--my, 0) * -2%));
+  transition: transform .6s cubic-bezier(.2, .7, .2, 1), filter 1.1s ease, opacity 1.1s ease; }
+/* unscanned: a pale sonar ghost that has not resolved out of the water yet */
+.card:not(.found) .ph img { filter: grayscale(1) contrast(1.15) blur(1.5px); opacity: .42; }
+.ph::before { content: ""; position: absolute; inset: 0; pointer-events: none; transition: opacity 1s;
+  background: repeating-linear-gradient(0deg, rgba(127, 230, 255, .10) 0 1px, transparent 1px 4px); }
+.card.found .ph::before { opacity: 0; }
+.ph::after { content: ""; position: absolute; left: 0; right: 0; height: 30%; top: -30%; pointer-events: none; opacity: 0;
+  background: linear-gradient(transparent, rgba(127, 230, 255, .35) 85%, rgba(220, 250, 255, .9) 100%); }
+.card.scanning .ph::after { opacity: 1; animation: sweep var(--scan-ms, 650ms) linear forwards; }
+@keyframes sweep { to { top: 100%; } }
+.ph .glare { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .4s; mix-blend-mode: screen;
+  background: radial-gradient(circle at calc(50% + var(--mx, 0) * 50%) calc(50% + var(--my, 0) * 50%), rgba(255, 255, 255, .22), transparent 42%); }
+.card:hover .ph .glare { opacity: 1; }
+.ph.none { display: grid; place-items: center; cursor: default; background: radial-gradient(closest-side, rgba(127, 230, 255, .12), transparent); }
+.ph.none span { font: 900 64px/1 var(--display); color: rgba(255,255,255,.14); text-transform: uppercase; }
+
+/* text floats on a soft pool of shade rather than a box */
+.cbody { position: relative; isolation: isolate; margin-top: -46px; display: grid; gap: 9px; }
+.cbody::before { content: ""; position: absolute; inset: -34px -56px -30px; z-index: -1; pointer-events: none;
+  background: radial-gradient(closest-side, var(--scrim) 35%, transparent); }
+.cbody h3 { font: 800 clamp(28px, 2.3vw, 36px)/.95 var(--display); margin: 0; letter-spacing: .01em; text-wrap: balance;
+  text-shadow: 0 2px 22px var(--shadow); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.card.L .chips { justify-content: flex-end; }
+.chip { display: inline-flex; align-items: center; gap: 7px; font: 500 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .14em; color: var(--c-soft, var(--ink-soft)); }
+.chip::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .7; }
+.chip.dz3 { color: #ff97a2; }
+.chip.dz3::before { background: var(--deadly); opacity: 1; box-shadow: 0 0 0 0 var(--deadly); animation: threat 1.8s ease-out infinite; }
+.chip.dz2 { color: #ffc978; }
+.chip.dz1 { color: #e2df8e; }
+.card.lite .chip.dz1 { color: #6d6a10; } .card.lite .chip.dz2 { color: #92560a; } .card.lite .chip.dz3 { color: #b0142a; }
+@keyframes threat { 70% { box-shadow: 0 0 0 7px rgba(255, 83, 100, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 83, 100, 0); } }
+.blurb { margin: 0; font-size: 16.5px; line-height: 1.5; text-shadow: 0 1px 14px var(--shadow); }
+.more { justify-self: start; display: inline-flex; align-items: center; gap: 10px; position: relative; cursor: pointer;
+  font: 800 16px/1 var(--display); letter-spacing: .14em; text-transform: uppercase; color: var(--c-act);
+  background: none; border: 0; padding: 8px 0; margin-top: 2px; }
+.card.L .more { justify-self: end; }
+.more::after { content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 1.5px; background: currentColor; transform: scaleX(.25); transform-origin: left; transition: transform .35s ease; }
+.card.L .more::after { transform-origin: right; }
+.more .arr { transition: transform .35s ease; }
+.more:hover::after, .more:focus-visible::after { transform: scaleX(1); }
+.more:hover .arr { transform: translateX(5px); }
+
+/* ---------- HUD (dive computer) ---------- */
+.hud { position: fixed; z-index: 5; left: 16px; top: calc(16px + env(safe-area-inset-top, 0px)); width: 236px;
+  background: var(--glass-strong); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.hud > * { min-width: 0; }
+.hud .lbl { font: 500 11px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--ink-faint); margin: 0; }
+.hud .val { font: 800 38px/.95 var(--display); color: var(--readout); font-variant-numeric: tabular-nums; margin: 4px 0 0; word-break: break-word; }
+.hud .sub { font: 400 13px/1.2 var(--mono); color: var(--ink-soft); margin: 4px 0 0; font-variant-numeric: tabular-nums; }
+.hud .zone-now { font: 800 18px/1.1 var(--display); letter-spacing: .06em; text-transform: uppercase; margin: 0; color: var(--ink); }
+.hud dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font: 400 12px/1.3 var(--mono); }
+.hud dt { color: var(--ink-faint); }
+.hud dd { margin: 0; text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
+.hud .row { display: flex; gap: 8px; }
+.hud select, .hud .home { font: 500 12px/1 var(--mono); background: #0a1a28; color: var(--ink); border: 1px solid var(--line); border-radius: 3px; padding: 8px; }
+.hud select { flex: 1; min-width: 0; width: 100%; }
+.hud .home { cursor: pointer; white-space: nowrap; }
+.hud .home:hover { border-color: var(--readout); }
+
+/* ---------- mini-map ---------- */
+.map { position: fixed; z-index: 5; right: 18px; top: 10vh; height: 80vh; width: 150px; }
+.map .track { position: absolute; right: 6px; top: 0; bottom: 0; width: 3px; border-radius: 2px; cursor: pointer;
+  background: linear-gradient(#000 0%, #081c46 44%, #8fd0ee 49.5%, #1f9ec0 50.5%, #041a33 60%, #010408 70%, #3a1206 85%, #ffb24a 100%); }
+.map .track::before { content: ""; position: absolute; inset: 0 -10px; }
+.map .mk { position: absolute; right: 0; transform: translateY(-50%); display: flex; align-items: center; gap: 8px; cursor: pointer;
+  font: 500 11px/1 var(--mono); color: var(--ink-soft); background: none; border: 0; padding: 0; }
+.map .mk span { background: rgba(3, 10, 18, .6); padding: 3px 6px; border-radius: 3px; }
+.map .mk::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ink-soft); margin-right: 4px; }
+.map .mk:hover { color: #fff; }
+.map .mk.sealvl { color: #fff; font-weight: 500; }
+.map .dot { position: absolute; right: 5px; width: 5px; height: 1px; background: rgba(255,255,255,.18); pointer-events: none; transition: background .5s, width .5s; }
+.map .dot.on { background: var(--readout); width: 11px; box-shadow: 0 0 6px var(--readout); }
+.map .you { position: absolute; right: -2px; width: 19px; height: 3px; background: var(--signal); transform: translateY(-50%); box-shadow: 0 0 8px var(--signal); pointer-events: none; }
+
+/* ---------- field log (game layer) ---------- */
+.log { display: grid; gap: 7px; border-top: 1px solid var(--line); padding-top: 11px; }
+.logbtn { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; background: none; border: 0; padding: 0; color: var(--ink); cursor: pointer; text-align: left; }
+.logbtn .cnt { font: 500 13px/1 var(--mono); color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.logbtn .cnt b { font-weight: 500; color: var(--readout); }
+.logbtn:hover .lbl { color: var(--readout); }
+.logbtn .lbl::after { content: " ›"; }
+.bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,.08); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--readout), #c8f6ff); box-shadow: 0 0 10px var(--readout); transition: width .8s cubic-bezier(.2, .7, .2, 1); }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.badges i { width: 9px; height: 9px; transform: rotate(45deg); border: 1px solid rgba(255,255,255,.22); transition: background .5s, box-shadow .5s, border-color .5s; }
+.badges i.on { background: var(--signal); border-color: var(--signal); box-shadow: 0 0 8px var(--signal); }
+
+.toasts { position: fixed; z-index: 7; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  display: grid; gap: 8px; justify-items: center; pointer-events: none; width: max-content; max-width: calc(100vw - 32px); }
+.toast { display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border-radius: 99px; max-width: 100%;
+  font: 500 13px/1.25 var(--mono); color: var(--ink); background: rgba(4, 12, 22, .84); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: inset 0 0 0 1px rgba(127, 230, 255, .28), 0 12px 32px -12px rgba(0,0,0,.7);
+  animation: tin .45s cubic-bezier(.2, .9, .3, 1.3) both, tout .45s ease-in 2.7s forwards; }
+.toast .d { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--readout); box-shadow: 0 0 10px var(--readout); }
+.toast b { font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.toast .n { color: var(--ink-faint); white-space: nowrap; }
+.toast.badge { border-radius: 12px; padding: 12px 20px 12px 14px; gap: 14px; animation-delay: 0s, 4s;
+  box-shadow: inset 0 0 0 1px rgba(255, 138, 61, .55), 0 0 40px -8px rgba(255, 138, 61, .5), 0 12px 32px -12px rgba(0,0,0,.7); }
+.toast .medal { flex: none; width: 30px; height: 30px; margin: 4px; transform: rotate(45deg); border-radius: 4px;
+  background: linear-gradient(135deg, #ffd0a8, var(--signal) 55%, #b64a0e); box-shadow: 0 0 18px var(--signal); animation: medal .8s cubic-bezier(.2, .9, .3, 1.4) both .1s; }
+.toast .bt { display: grid; gap: 3px; }
+.toast .bt small { font: 500 10px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--signal); }
+.toast .bt strong { font: 800 22px/1 var(--display); text-transform: uppercase; letter-spacing: .04em; }
+.toast .bt span { color: var(--ink-soft); font-size: 12px; }
+@keyframes tin { from { opacity: 0; transform: translateY(18px) scale(.94); } }
+@keyframes tout { to { opacity: 0; transform: translateY(8px); } }
+@keyframes medal { from { transform: rotate(-135deg) scale(0); } }
+
+dialog.logd .inner { padding-top: 28px; }
+.logd .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 18px; margin: 4px 0 2px; }
+.logd .stats div { display: grid; gap: 4px; }
+.logd .stats small { font: 500 11px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--ink-faint); }
+.logd .stats b { font: 800 28px/1 var(--display); color: var(--readout); font-variant-numeric: tabular-nums; }
+.logd .bgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px 18px; }
+.logd .bg { display: flex; gap: 12px; align-items: center; opacity: .4; }
+.logd .bg.on { opacity: 1; }
+.logd .bg i { flex: none; width: 16px; height: 16px; margin: 3px; transform: rotate(45deg); border-radius: 2px; border: 1px solid rgba(255,255,255,.35); }
+.logd .bg.on i { border: 0; background: linear-gradient(135deg, #ffd0a8, var(--signal) 55%, #b64a0e); box-shadow: 0 0 12px var(--signal); }
+.logd .bg p { margin: 0; font: 400 12px/1.35 var(--mono); color: var(--ink-soft); }
+.logd .bg p strong { display: block; font: 800 17px/1.1 var(--display); letter-spacing: .04em; text-transform: uppercase; color: var(--ink); }
+.logd .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.tile { position: relative; aspect-ratio: 1; border-radius: 6px; overflow: hidden; border: 0; padding: 0; cursor: pointer; color: var(--ink);
+  background: radial-gradient(closest-side, #0e2333, #050d15); display: grid; place-items: center; }
+.tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.tile:hover img { transform: scale(1.08); }
+.tile .q { font: 900 38px/1 var(--display); color: rgba(127, 230, 255, .22); }
+.tile .tn { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 7px 6px; text-align: left;
+  font: 500 10.5px/1.2 var(--mono); background: linear-gradient(transparent, rgba(0,0,0,.85)); }
+.tile.unk .tn { color: var(--ink-faint); background: none; }
+.tile .star { position: absolute; top: 5px; right: 6px; color: var(--signal); font-size: 13px; text-shadow: 0 0 8px var(--signal); }
+.tile:hover { outline: 1px solid var(--readout); }
+.logd .hint { font: 400 12px/1.4 var(--mono); color: var(--ink-faint); margin: 0; max-width: 46ch; }
+.logd .reset { font: 500 12px/1 var(--mono); background: none; color: var(--ink-faint); border: 1px solid var(--line); border-radius: 3px; padding: 9px 12px; cursor: pointer; }
+.logd .reset:hover { color: var(--deadly); border-color: var(--deadly); }
+.sea-below .how { font: 500 12px/1.5 var(--mono); letter-spacing: .06em; color: #bfe6f2; margin: 22px auto 0; max-width: 46ch; }
+.sea-below .how b { color: var(--readout); font-weight: 500; }
+
+/* ---------- details dialog ---------- */
+dialog.det { width: min(760px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: 0; border: 1px solid var(--line); border-radius: 8px;
+  background: #06121d; color: var(--ink); overflow: hidden auto; }
+dialog.det::backdrop { background: rgba(1, 5, 10, .72); backdrop-filter: blur(3px); }
+.det figure { margin: 0; background: #000; position: relative; }
+.det figure img { display: block; width: 100%; max-height: 52vh; object-fit: contain; }
+.det figcaption { font: 400 11px/1.4 var(--mono); color: var(--ink-faint); padding: 8px 20px; background: #030a11; }
+.det figcaption a { color: var(--ink-soft); }
+.det .x { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,.3);
+  background: rgba(0,0,0,.6); color: #fff; font: 400 24px/1 var(--mono); cursor: pointer; z-index: 2; }
+.det .inner { padding: 20px 24px 24px; display: grid; gap: 12px; }
+.det .dmeta { font: 500 14px/1.2 var(--mono); color: var(--readout); margin: 0; font-variant-numeric: tabular-nums; }
+.det h2 { font: 900 clamp(36px, 6vw, 52px)/.95 var(--display); margin: 0; text-transform: uppercase; text-wrap: balance; }
+.det .range { font: 400 13px/1.4 var(--mono); color: var(--ink-soft); margin: 0; }
+.det .lede { font-size: 19px; line-height: 1.5; margin: 0; max-width: 62ch; }
+.det h3 { font: 800 20px/1 var(--display); text-transform: uppercase; letter-spacing: .1em; color: var(--signal); margin: 8px 0 0; }
+.det ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; max-width: 64ch; }
+.det li { position: relative; padding-left: 22px; font-size: 17px; line-height: 1.45; }
+.det li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--readout); }
+.det .foot { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 16px; margin-top: 6px; }
+.det .wiki { font: 500 13px/1 var(--mono); color: var(--readout); }
+.det .nav { display: flex; gap: 8px; flex-wrap: wrap; }
+.det .nav button { font: 500 12px/1.2 var(--mono); background: #0b1c2b; color: var(--ink); border: 1px solid var(--line); border-radius: 3px; padding: 9px 12px; cursor: pointer; max-width: 260px; text-align: left; }
+.det .nav button:hover { border-color: var(--readout); }
+.det .nav button[hidden] { display: none; }
+
+/* ---------- narrow screens ---------- */
+@media (max-width: 1319px) {
+  .map { display: none; }
+  .hud { left: 0; right: 0; top: 0; width: auto; border-radius: 0; border-width: 0 0 1px; padding: 10px 16px calc(10px);
+    padding-top: calc(10px + env(safe-area-inset-top, 0px)); grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 16px; }
+  .hud .readout { grid-row: span 2; }
+  .hud .val { font-size: 30px; }
+  .hud dl, .hud .lbl.zl { display: none; }
+  .hud .zone-now { font-size: 15px; text-align: right; }
+  .hud .row { justify-content: flex-end; }
+  .hud .log { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; padding-top: 6px; border: 0; }
+  .hud .log .bar { flex: 1; }
+  .hud .log .badges { display: none; }
+  .hud select { flex: 0 1 190px; }
+}
+@media (max-width: 819px) {
+  :root { --card-w: auto; --gutter: 24px; }
+  .ruler { left: 20px; }
+  .tick { display: none; }
+  .card.L, .card.R { left: 44px; right: 16px; text-align: left; --drift: 28px; }
+  .card.L .pin { left: auto; right: 100%; }
+  .card.L .pin::before { transform-origin: left; background: linear-gradient(270deg, var(--c-pin, var(--readout)), transparent); }
+  .card.L .pin i { right: auto; left: -5.5px; }
+  .card.L .meta { flex-direction: row; }
+  .card.L .meta .st { margin-right: 0; margin-left: auto; }
+  .card.L .chips { justify-content: flex-start; }
+  .card.L .more { justify-self: start; }
+  .card.L .ph, .card.R .ph { margin-left: -8px; margin-right: -16px; }
+  .cbody::before { inset: -30px -24px -26px; }
+  .hud .sub { display: none; }
+  .hud .home { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ph img, .ph, .bar i { transition: none; }
+  .ph, .ph img { transform: none; }
+  .wrap { transform: none; }
+  .chip.dz3::before, .toast, .toast .medal { animation: none; }
+}
+</style>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<aside class="hud" aria-live="off" aria-label="Position gauge">
+  <div class="readout">
+    <p class="lbl" id="hudLbl">Sea level</p>
+    <p class="val" id="hudVal">0 m</p>
+    <p class="sub" id="hudSub">0 ft</p>
+  </div>
+  <div>
+    <p class="lbl zl">Zone</p>
+    <p class="zone-now" id="hudZone">The surface</p>
+  </div>
+  <dl>
+    <dt id="hudK1">Pressure</dt><dd id="hudV1">1.0 atm</dd>
+    <dt id="hudK2">Journey</dt><dd id="hudV2">0%</dd>
+  </dl>
+  <div class="row">
+    <label class="sr" for="jump" style="position:absolute;left:-9999px">Jump to a place</label>
+    <select id="jump"><option value="">Jump to…</option></select>
+    <button class="home" id="home" type="button">Sea level</button>
+  </div>
+  <div class="log">
+    <button class="logbtn" id="logBtn" type="button" aria-haspopup="dialog">
+      <span class="lbl">Field log</span>
+      <span class="cnt"><b id="logN">0</b> / <span id="logT">0</span></span>
+    </button>
+    <div class="bar" aria-hidden="true"><i id="logBar"></i></div>
+    <div class="badges" id="badgeRow" aria-hidden="true"></div>
+  </div>
+</aside>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<nav class="map" aria-label="Journey map">
+  <div class="track" id="track"></div>
+  <div class="you" id="you"></div>
+</nav>
+
+<main id="world"></main>
+
+<dialog class="det" id="det" aria-labelledby="dName">
+  <button class="x" id="dClose" type="button" aria-label="Close details">×</button>
+  <figure>
+    <img id="dImg" alt="">
+    <figcaption id="dCred"></figcaption>
+  </figure>
+  <div class="inner">
+    <p class="dmeta" id="dMeta"></p>
+    <h2 id="dName"></h2>
+    <div class="chips" id="dChips"></div>
+    <p class="range" id="dRange"></p>
+    <p class="lede" id="dBlurb"></p>
+    <h3>Interesting facts</h3>
+    <ul id="dFacts"></ul>
+    <div class="foot">
+      <a class="wiki" id="dWiki" target="_blank" rel="noopener">Read more on Wikipedia →</a>
+      <div class="nav">
+        <button type="button" id="dPrev"></button>
+        <button type="button" id="dNext"></button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="det logd" id="logD" aria-labelledby="logTitle">
+  <button class="x" id="logClose" type="button" aria-label="Close logbook">×</button>
+  <div class="inner">
+    <p class="dmeta">Field logbook</p>
+    <h2 id="logTitle">Your expedition</h2>
+    <div class="stats" id="logStats"></div>
+    <h3>Badges</h3>
+    <div class="bgrid" id="logBadges"></div>
+    <h3>Sky &amp; space</h3>
+    <div class="tiles" id="logUp"></div>
+    <h3>Ocean &amp; Earth</h3>
+    <div class="tiles" id="logDown"></div>
+    <div class="foot">
+      <p class="hint">Pause on anything you pass and it scans into your log. Unknown tiles take you to where they hide.</p>
+      <button class="reset" id="logReset" type="button">Reset log</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="data.js"></script>
+<script src="credits.js"></script>
+<script>
+(() => {
+'use strict';
+const LY = 9.4607e15;
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const nf = new Intl.NumberFormat('en-US');
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* ================= formatting ================= */
+const trim1 = x => (Math.round(x * 10) / 10).toString();
+function big(x) {
+  if (x < 1e6) return nf.format(Math.round(x));
+  if (x < 1e9) return trim1(x / 1e6) + ' million';
+  if (x < 1e12) return trim1(x / 1e9) + ' billion';
+  return trim1(x / 1e12) + ' trillion';
+}
+function smallM(v) { return v < 10 ? trim1(v) : nf.format(Math.round(v)); }
+function fmt(dir, v) {
+  if (v < 0.05) return { main: '0 m', sub: 'sea level' };
+  if (dir === 'down') {
+    if (v < 20000) return { main: '−' + smallM(v) + ' m', sub: nf.format(Math.round(v * 3.28084)) + ' ft' };
+    return { main: '−' + nf.format(Math.round(v / 1000)) + ' km', sub: nf.format(Math.round(v / 1609.34)) + ' mi' };
+  }
+  if (v < 100000) return { main: smallM(v) + ' m', sub: nf.format(Math.round(v * 3.28084)) + ' ft' };
+  if (v < 1e15) {
+    const km = v / 1000;
+    const sub = v > 3e10 ? trim1(v / 1.496e11) + ' AU from Earth' : big(v / 1609.34) + ' mi';
+    return { main: big(km) + ' km', sub };
+  }
+  const ly = v / LY;
+  const main = (ly < 10 ? ly.toFixed(2) : big(ly)) + ' light-years';
+  return { main, sub: 'light left here ' + (ly < 10 ? ly.toFixed(1) : big(ly)) + ' years ago' };
+}
+const SUP = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
+function sci(x) {
+  const e = Math.floor(Math.log10(x)), m = x / 10 ** e;
+  return m.toFixed(1) + '×10' + String(e).split('').map(c => SUP[c]).join('');
+}
+function fmtAtm(p) {
+  if (p >= 1000) return nf.format(Math.round(p)) + ' atm';
+  if (p >= 10) return Math.round(p) + ' atm';
+  if (p >= 0.01) return p.toPrecision(2) + ' atm';
+  return sci(p) + ' atm';
+}
+function lerpTable(t, x) {
+  if (x <= t[0][0]) return t[0][1];
+  for (let i = 1; i < t.length; i++) if (x <= t[i][0]) {
+    const [x0, y0] = t[i - 1], [x1, y1] = t[i];
+    return y0 + (y1 - y0) * (x - x0) / (x1 - x0);
+  }
+  return t[t.length - 1][1];
+}
+// Standard-atmosphere pressure, stored as log10(atm) by km.
+const AIR = [[0, 0], [5, -0.273], [10, -0.583], [15, -0.924], [20, -1.268], [25, -1.602], [30, -1.928], [40, -2.548],
+  [50, -3.102], [60, -3.658], [70, -4.287], [80, -4.983], [90, -5.745], [100, -6.495], [150, -8.35], [200, -9.08], [400, -10.85], [1000, -13.2]];
+// Earth interior pressure by km.
+const ROCK = [[11, 1100], [20, 3800], [100, 30000], [410, 138000], [660, 237000], [2890, 1350000], [5150, 3280000], [6371, 3600000]];
+function pressure(dir, v) {
+  if (dir === 'down') return v <= 11000 ? 1 + v / 10.06 : lerpTable(ROCK, v / 1000);
+  if (v > 1e6) return 0;
+  return 10 ** lerpTable(AIR, v / 1000);
+}
+function lightTime(v) {
+  const s = v / 299792458;
+  if (s < 60) return s.toFixed(s < 10 ? 2 : 1) + ' s';
+  if (s < 3600) return Math.floor(s / 60) + ' min ' + Math.round(s % 60) + ' s';
+  if (s < 86400 * 2) return trim1(s / 3600) + ' hours';
+  if (s < 86400 * 365.25) return Math.round(s / 86400) + ' days';
+  const y = s / (86400 * 365.25);
+  return (y < 10 ? y.toFixed(2) : big(y)) + ' years';
+}
+const DANGER = { 3: 'Can kill', 2: 'Can injure', 1: 'Hazard' };
+
+/* ================= colour ramps (value → colour) ================= */
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
+const UP_STOPS = [[0, '#9ad6f0'], [2000, '#71bbe6'], [8000, '#3f90d2'], [15000, '#2767b0'], [30000, '#163f80'], [60000, '#0c2254'],
+  [100000, '#07122f'], [1e6, '#040818'], [1e9, '#03040d'], [1e16, '#050414'], [1e20, '#0b0620'], [1e24, '#060312'], [5e26, '#000000']].map(([v, c]) => [v, hex(c)]);
+const DOWN_STOPS = [[0, '#1f9ec0'], [20, '#1683a8'], [100, '#0f6190'], [200, '#0b4776'], [500, '#072d52'], [1000, '#041a33'],
+  [3000, '#020d1c'], [6000, '#01070f'], [10935, '#010408'], [11500, '#170b06'], [30000, '#2a1208'], [400000, '#4a1606'],
+  [2.89e6, '#8a2e06'], [5.15e6, '#d2600e'], [6.371e6, '#ffb24a']].map(([v, c]) => [v, hex(c)]);
+const L = v => Math.log10(1 + v);
+function ramp(stops, v) {
+  const x = L(v);
+  if (x <= L(stops[0][0])) return stops[0][1];
+  for (let i = 1; i < stops.length; i++) {
+    const x1 = L(stops[i][0]);
+    if (x <= x1) {
+      const x0 = L(stops[i - 1][0]), t = (x - x0) / (x1 - x0);
+      return stops[i][1].map((c, k) => stops[i - 1][1][k] + (c - stops[i - 1][1][k]) * t);
+    }
+  }
+  return stops[stops.length - 1][1];
+}
+const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+function fxAt(dir, v) {
+  // r: stars, g: sunbeams, b: marine snow / embers, a: bioluminescence
+  if (dir === 'up') return [smooth(L(25000), L(120000), L(v)), 0, 0, 0];
+  return [0, 1 - smooth(0, L(400), L(v)), smooth(L(120), L(600), L(v)), smooth(L(350), L(900), L(v)) * (1 - smooth(L(5000), L(9000), L(v)))];
+}
+
+/* ================= build DOM ================= */
+const world = $('world');
+const byId = {};
+ITEMS.forEach(it => { byId[it.id] = it; it.s = L(it.v); it.u = it.dir === 'up' ? -it.s : it.s; });
+
+const nodes = [];
+ZONES.forEach(z => nodes.push({ type: 'zone', dir: z.dir, v: z.v, u: z.dir === 'up' ? -L(z.v) : L(z.v), z }));
+ITEMS.forEach(it => nodes.push({ type: 'item', dir: it.dir, v: it.v, u: it.u, it }));
+nodes.push({ type: 'sea', dir: 'down', v: 0, u: 0 });
+// Top of the page first. At equal positions a zone header comes before its first item (going down)
+// and after it (going up) — so the header is where you cross into the zone.
+nodes.sort((a, b) => a.u - b.u || ((a.type === 'zone') - (b.type === 'zone')) * (a.dir === 'up' ? 1 : -1));
+
+function credit(id) { return (typeof CREDITS !== 'undefined' && CREDITS[id]) || null; }
+
+function cardHTML(it) {
+  const f = fmt(it.dir, it.v), c = credit(it.id);
+  const ph = c
+    ? `<figure class="ph" data-open="${it.id}"><img loading="lazy" decoding="async" src="${esc(c.src)}" alt="${esc(it.name)}" width="${c.w}" height="${c.h}"><span class="glare"></span></figure>`
+    : `<figure class="ph none"><span>${esc(it.kind)}</span></figure>`;
+  const dz = it.danger ? `<span class="chip dz${it.danger}">${DANGER[it.danger]}</span>` : '';
+  return `<span class="pin"><i></i></span>
+    <div class="wrap">
+      <p class="meta"><span>${f.main}</span><span class="alt">${f.sub}</span><span class="st"></span></p>
+      ${ph}
+      <div class="cbody">
+        <h3>${esc(it.name)}</h3>
+        <div class="chips"><span class="chip">${esc(it.kind)}</span>${dz}</div>
+        <p class="blurb">${esc(it.blurb)}</p>
+        <button class="more" type="button" data-open="${it.id}">${it.dir === 'up' ? 'Look closer' : 'Dive in'} <span class="arr" aria-hidden="true">→</span></button>
+      </div>
+    </div>`;
+}
+// Entries over the pale lower sky switch to dark ink.
+const lum = c => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+
+const rulerA = document.createElement('div'); rulerA.className = 'ruler'; world.appendChild(rulerA);
+const rulerB = document.createElement('div'); rulerB.className = 'ruler'; world.appendChild(rulerB);
+const tickLayer = document.createElement('div'); world.appendChild(tickLayer);
+
+for (const n of nodes) {
+  let el;
+  if (n.type === 'item') {
+    el = document.createElement('article');
+    el.className = 'card' + (n.it.danger === 3 ? ' d3' : '') + (n.dir === 'up' && lum(ramp(UP_STOPS, n.v)) > 0.45 ? ' lite' : '');
+    el.id = n.it.id;
+    el.innerHTML = cardHTML(n.it);
+    el.addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse' || REDUCED) return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2)).toFixed(3));
+      el.style.setProperty('--my', Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2)).toFixed(3));
+    });
+    el.addEventListener('pointerleave', () => { el.style.removeProperty('--mx'); el.style.removeProperty('--my'); });
+  } else if (n.type === 'zone') {
+    el = document.createElement('section');
+    el.className = 'zone' + (n.dir === 'up' && n.v < 12000 ? ' light' : '');
+    el.innerHTML = `<h2>${esc(n.z.name)}</h2><p>${esc(n.z.sub)}</p>`;
+  } else {
+    el = document.createElement('section');
+    el.className = 'sea';
+    el.id = 'sea-level';
+    el.innerHTML = `
+      <div class="sea-above">
+        <p class="eyebrow">You are at 0 m</p>
+        <h1>Yugen</h1>
+        <p class="say">Yū·gen · an awareness of the universe too deep and mysterious for words</p>
+        <p>Above you: 46.5 billion light-years of sky. Below you: 6,371 km of ocean and rock.</p>
+      </div>
+      <div class="sea-below">
+        <p>Scroll up to fly past birds, jets and satellites to the edge of the universe. Scroll down to dive past sharks, shipwrecks and trench monsters to the centre of the Earth.</p>
+        <div class="go-row">
+          <button class="go up" type="button" data-step="-1">↑ Fly up</button>
+          <button class="go down" type="button" data-step="1">↓ Dive down</button>
+        </div>
+        <p class="how">◉ Pause on anything you pass to scan it into your field log · <b>${ITEMS.length}</b> to find</p>
+      </div>`;
+  }
+  n.el = el;
+  world.appendChild(el);
+}
+
+/* ================= layout: log scale with collision spacing ================= */
+let anchors = [], docH = 0, seaY = 0, floorY = 0;
+const ticks = [];
+function layout() {
+  const wide = innerWidth >= 820;
+  const vh = innerHeight;
+  const Ku = wide ? 780 : 860, Kd = wide ? 2200 : 2400; // px per decade
+  const gap = 64;
+  // Consecutive entries are held at least this far apart, whichever side they take, so the
+  // reader meets roughly one at a time instead of four at once.
+  const step = vh * (wide ? 0.72 : 0.62);
+  let y = 0, lastBottom = { L: -1e9, R: -1e9 }, prevU = null, lastItemY = -1e9;
+  const top0 = vh * 0.6;
+  for (const n of nodes) {
+    const h = n.h = n.el.offsetHeight;
+    let ideal = prevU === null ? top0 : y + (n.u <= 0 ? Ku : Kd) * (n.u - prevU);
+    let need, side = null;
+    if (n.type === 'item') {
+      if (wide) side = lastBottom.L <= lastBottom.R ? 'L' : 'R';
+      const lb = wide ? lastBottom[side] : Math.max(lastBottom.L, lastBottom.R);
+      need = Math.max(lb + gap + 20, lastItemY + step); // card anchor sits 20px below its top edge
+    } else if (n.type === 'zone') {
+      need = Math.max(lastBottom.L, lastBottom.R) + gap * 2 + 24;
+    } else {
+      const above = n.el.firstElementChild.offsetHeight, below = n.el.lastElementChild.offsetHeight;
+      need = Math.max(lastBottom.L, lastBottom.R) + Math.max(above, vh * 0.42) + gap;
+      n.below = Math.max(below, vh * 0.42);
+    }
+    y = Math.max(ideal, need, prevU === null ? 0 : y + 6);
+    n.y = y;
+    if (n.type === 'item') {
+      n.el.classList.remove('L', 'R');
+      n.el.classList.add(side || 'R');
+      n.el.style.top = (y - 20) + 'px';
+      lastItemY = y;
+      const bottom = y - 20 + h;
+      if (wide) lastBottom[side] = bottom; else lastBottom.L = lastBottom.R = bottom;
+    } else if (n.type === 'zone') {
+      n.el.style.top = (y - 24) + 'px';
+      lastBottom.L = lastBottom.R = y - 24 + h;
+    } else {
+      seaY = y;
+      n.el.style.top = y + 'px';
+      lastBottom.L = lastBottom.R = y + n.below;
+    }
+    prevU = n.u;
+  }
+  docH = Math.max(lastBottom.L, lastBottom.R) + vh * 0.6;
+  world.style.height = docH + 'px';
+  anchors = nodes.map(n => ({ y: n.y, u: n.u }));
+  const seaNode = nodes.find(n => n.type === 'sea');
+  rulerA.style.top = '0px'; rulerA.style.height = (seaY - seaNode.el.firstElementChild.offsetHeight - 10) + 'px';
+  rulerB.style.top = (seaY + seaNode.el.lastElementChild.offsetHeight + 10) + 'px';
+  rulerB.style.height = (docH - (seaY + seaNode.el.lastElementChild.offsetHeight + 10)) + 'px';
+  floorY = yAtU(L(11000));
+  buildTicks();
+  buildRamps();
+  buildMap();
+}
+
+function uAtY(y) {
+  const a = anchors;
+  if (y <= a[0].y) return a[0].u;
+  if (y >= a[a.length - 1].y) return a[a.length - 1].u;
+  let lo = 0, hi = a.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (a[m].y <= y) lo = m; else hi = m; }
+  const A = a[lo], B = a[hi];
+  return B.y === A.y ? B.u : A.u + (B.u - A.u) * (y - A.y) / (B.y - A.y);
+}
+function yAtU(u) {
+  const a = anchors;
+  if (u <= a[0].u) return a[0].y;
+  if (u >= a[a.length - 1].u) return a[a.length - 1].y;
+  let lo = 0, hi = a.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (a[m].u <= u) lo = m; else hi = m; }
+  const A = a[lo], B = a[hi];
+  return B.u === A.u ? A.y : A.y + (B.y - A.y) * (u - A.u) / (B.u - A.u);
+}
+const posAtY = y => { const u = uAtY(y); return { dir: u < 0 ? 'up' : 'down', v: 10 ** Math.abs(u) - 1 }; };
+
+function buildTicks() {
+  tickLayer.innerHTML = '';
+  const upV = [], downV = [10, 50, 100, 200, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 100e3, 1e6, 2e6, 3e6, 4e6, 5e6, 6e6];
+  for (let e = 1; e <= 15; e++) upV.push(10 ** e);
+  for (let e = -1; e <= 10; e++) upV.push(LY * 10 ** e);
+  const add = (dir, v) => ({ y: yAtU(dir === 'up' ? -L(v) : L(v)), label: fmt(dir, v).main });
+  const list = [...upV.map(v => add('up', v)), ...downV.map(v => add('down', v))].sort((a, b) => a.y - b.y);
+  let last = -1e9;
+  const seaTop = seaY - 300, seaBot = seaY + 300;
+  for (const t of list) {
+    if (t.y - last < 60 || (t.y > seaTop && t.y < seaBot)) continue;
+    // Skip ticks that would sit on top of a zone header.
+    if (nodes.some(n => n.type === 'zone' && t.y > n.y - 40 && t.y < n.y + n.el.offsetHeight)) continue;
+    // …or on an entry's spine dot.
+    if (nodes.some(n => n.type === 'item' && Math.abs(t.y - n.y) < 26)) continue;
+    const d = document.createElement('div');
+    d.className = 'tick'; d.style.top = t.y + 'px'; d.textContent = t.label;
+    tickLayer.appendChild(d); last = t.y;
+  }
+}
+
+/* ================= WebGL background ================= */
+const RAMP_N = 4096;
+let gl = null;
+function initGL() {
+  if (typeof THREE === 'undefined') return;
+  try {
+    const canvas = $('sky');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'low-power' });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const mk = () => { const t = new THREE.DataTexture(new Uint8Array(RAMP_N * 4), RAMP_N, 1, THREE.RGBAFormat); t.magFilter = t.minFilter = THREE.LinearFilter; t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; return t; };
+    const uniforms = {
+      uRamp: { value: mk() }, uFx: { value: mk() },
+      uScroll: { value: 0 }, uViewH: { value: innerHeight }, uW: { value: innerWidth }, uDocH: { value: 1 },
+      uSeaY: { value: 0 }, uFloorY: { value: 0 }, uTime: { value: 0 },
+    };
+    const mat = new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+      fragmentShader: `
+        precision highp float;
+        varying vec2 vUv;
+        uniform sampler2D uRamp, uFx;
+        uniform float uScroll, uViewH, uW, uDocH, uSeaY, uFloorY, uTime;
+        float h21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+        vec2 h22(vec2 p){ float n = h21(p); return vec2(n, h21(p + n + 17.0)); }
+        // one soft dot per cell
+        float dots(vec2 p, float cell, float density, float r){
+          vec2 id = floor(p / cell); vec2 f = p - id * cell;
+          if (h21(id + 7.1) > density) return 0.0;
+          vec2 c = (0.15 + 0.7 * h22(id)) * cell;
+          float d = length(f - c);
+          return smoothstep(r, r * 0.25, d);
+        }
+        void main(){
+          vec2 px = vec2(vUv.x * uW, (1.0 - vUv.y) * uViewH);
+          float docY = uScroll + px.y;
+          float t = uTime;
+          float wave = sin(px.x * 0.011 + t * 1.2) * 7.0 + sin(px.x * 0.027 - t * 1.7) * 3.5 + sin(px.x * 0.0047 + t * 0.5) * 6.0;
+          float line = uSeaY + wave;
+          bool water = docY > line;
+          float sy = water ? max(docY, uSeaY + 40.0) : min(docY, uSeaY - 40.0);
+          vec3 col = texture2D(uRamp, vec2(sy / uDocH, 0.5)).rgb;
+          vec4 fx = texture2D(uFx, vec2(sy / uDocH, 0.5));
+
+          // stars, with slow parallax so they feel far away
+          if (fx.r > 0.01) {
+            vec2 sp = vec2(px.x, uScroll * 0.18 + px.y);
+            float s = dots(sp, 7.0, 0.05, 1.3) * (0.5 + 0.5 * sin(t * 2.0 + h21(floor(sp / 7.0)) * 40.0));
+            s += dots(sp + 300.0, 23.0, 0.12, 1.9);
+            s += dots(vec2(px.x, uScroll * 0.35 + px.y) + 91.0, 61.0, 0.10, 2.6) * 1.2;
+            col += vec3(0.85, 0.9, 1.0) * s * fx.r;
+            // faint milky band
+            float band = exp(-pow((px.x - uW * 0.5 - (docY * 0.02)) / (uW * 0.35), 2.0)) * 0.05;
+            col += vec3(0.5, 0.45, 0.7) * band * fx.r;
+          }
+          if (water) {
+            float depth = docY - line;
+            // sunbeams slanting down from the surface
+            float beams = 0.0;
+            float xs = px.x + depth * 0.35;
+            beams += pow(0.5 + 0.5 * sin(xs * 0.018 + sin(xs * 0.004 + t * 0.25) * 2.5 + t * 0.2), 10.0);
+            beams += pow(0.5 + 0.5 * sin(xs * 0.041 - t * 0.33), 16.0) * 0.6;
+            col += vec3(0.65, 0.9, 1.0) * beams * fx.g * 0.22 * exp(-depth / 900.0);
+            // surface glow just under the waterline
+            col += vec3(0.5, 0.85, 1.0) * 0.18 * exp(-depth / 40.0);
+            // marine snow drifts down; below the seafloor it becomes rising embers
+            if (fx.b > 0.01) {
+              bool rock = docY > uFloorY;
+              vec2 sp = vec2(px.x + sin(docY * 0.01 + t * 0.3) * 4.0, docY + (rock ? t * 26.0 : -t * 9.0));
+              float s = dots(sp, 26.0, 0.35, 1.6) + dots(sp * 1.3 + 50.0, 41.0, 0.3, 2.4) * 0.7;
+              vec3 sc = rock ? vec3(1.0, 0.55, 0.2) : vec3(0.75, 0.85, 0.9);
+              col += sc * s * fx.b * (rock ? 0.9 : 0.35);
+            }
+            // bioluminescent sparks that flash and fade
+            if (fx.a > 0.01) {
+              vec2 bp = vec2(px.x, docY * 0.8 + t * 3.0);
+              vec2 id = floor(bp / 90.0);
+              float blink = pow(max(0.0, sin(t * (0.6 + h21(id) * 1.3) + h21(id + 3.0) * 30.0)), 12.0);
+              float g = dots(bp, 90.0, 0.35, 6.0) * blink;
+              vec3 bc = mix(vec3(0.2, 0.9, 1.0), vec3(0.4, 0.5, 1.0), h21(id + 9.0));
+              col += bc * g * fx.a * 0.9;
+            }
+          } else {
+            // haze above the water
+            float hgt = line - docY;
+            col = mix(col, vec3(0.93, 0.97, 1.0), 0.35 * exp(-hgt / 160.0));
+          }
+          // foam line
+          float fl = abs(docY - line);
+          col = mix(col, vec3(0.95, 0.99, 1.0), smoothstep(2.5, 0.0, fl) * 0.9);
+          // vignette
+          vec2 q = vUv - 0.5;
+          col *= 1.0 - dot(q, q) * 0.45;
+          gl_FragColor = vec4(col, 1.0);
+        }`,
+    });
+    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
+    gl = { renderer, scene, cam, uniforms };
+  } catch (e) { gl = null; }
+}
+
+function buildRamps() {
+  const cols = new Uint8Array(RAMP_N * 4), fx = new Uint8Array(RAMP_N * 4);
+  for (let i = 0; i < RAMP_N; i++) {
+    const y = (i + 0.5) / RAMP_N * docH, p = posAtY(y);
+    const c = ramp(p.dir === 'up' ? UP_STOPS : DOWN_STOPS, p.v), f = fxAt(p.dir, p.v);
+    for (let k = 0; k < 3; k++) cols[i * 4 + k] = Math.round(c[k] * 255);
+    cols[i * 4 + 3] = 255;
+    for (let k = 0; k < 4; k++) fx[i * 4 + k] = Math.round(f[k] * 255);
+  }
+  if (!gl) return;
+  gl.uniforms.uRamp.value.image.data.set(cols); gl.uniforms.uRamp.value.needsUpdate = true;
+  gl.uniforms.uFx.value.image.data.set(fx); gl.uniforms.uFx.value.needsUpdate = true;
+  gl.uniforms.uDocH.value = docH; gl.uniforms.uSeaY.value = seaY; gl.uniforms.uFloorY.value = floorY;
+}
+
+function resizeGL() {
+  if (!gl) return;
+  gl.renderer.setSize(innerWidth, innerHeight, false);
+  gl.uniforms.uViewH.value = innerHeight; gl.uniforms.uW.value = innerWidth;
+}
+
+let t0 = performance.now();
+function frame(now) {
+  if (gl) {
+    gl.uniforms.uScroll.value = scrollY;
+    gl.uniforms.uTime.value = REDUCED ? 0 : (now - t0) / 1000;
+    gl.renderer.render(gl.scene, gl.cam);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ================= HUD ================= */
+const zonesSorted = { up: ZONES.filter(z => z.dir === 'up').sort((a, b) => a.v - b.v), down: ZONES.filter(z => z.dir === 'down').sort((a, b) => a.v - b.v) };
+function zoneAt(dir, v) {
+  if (v < 0.3) return 'The surface';
+  let name = dir === 'up' ? 'Troposphere' : 'Sunlight zone';
+  for (const z of zonesSorted[dir]) if (v >= z.v) name = z.name;
+  return name;
+}
+let lastHud = '';
+function updateHUD() {
+  const centre = scrollY + innerHeight / 2;
+  const p = posAtY(centre);
+  const f = fmt(p.dir, p.v);
+  const key = f.main + p.dir;
+  const frac = Math.min(1, Math.max(0, centre / docH));
+  $('you').style.top = (frac * 100) + '%';
+  const col = ramp(p.dir === 'up' ? UP_STOPS : DOWN_STOPS, p.v);
+  document.documentElement.style.setProperty('--bg', `rgb(${col.map(c => Math.round(c * 255)).join(',')})`);
+  if (key === lastHud) return;
+  lastHud = key;
+  $('hudLbl').textContent = p.v < 0.05 ? 'Sea level' : p.dir === 'up' ? (p.v >= 1e6 ? 'Distance from Earth' : 'Altitude') : (p.v > 11000 ? 'Below sea level' : 'Depth');
+  $('hudVal').textContent = f.main;
+  $('hudSub').textContent = f.sub;
+  $('hudZone').textContent = zoneAt(p.dir, p.v);
+  if (p.dir === 'up' && p.v >= 1e6) {
+    $('hudK1').textContent = 'Light from Earth';
+    $('hudV1').textContent = lightTime(p.v);
+  } else {
+    $('hudK1').textContent = 'Pressure';
+    const pr = pressure(p.dir, p.v);
+    $('hudV1').textContent = pr === 0 ? 'near-vacuum' : fmtAtm(pr);
+  }
+  if (p.dir === 'down') {
+    $('hudK2').textContent = p.v <= 11000 ? 'Of deepest ocean' : 'To Earth’s centre';
+    $('hudV2').textContent = p.v <= 11000 ? Math.round(p.v / 10935 * 100) + '%' : (Math.round(p.v / 6.371e6 * 1000) / 10) + '%';
+  } else {
+    $('hudK2').textContent = 'Air left above you';
+    const pct = p.v > 1e6 ? 0 : pressure('up', p.v) * 100;
+    $('hudV2').textContent = pct >= 1 ? Math.round(pct) + '%' : pct >= 0.01 ? pct.toFixed(2) + '%' : pct > 0 ? '< 0.01%' : '0%';
+  }
+}
+
+/* ================= navigation ================= */
+function yOf(id) { if (id === 'sea-level') return seaY; const n = nodes.find(n => n.type === 'item' && n.it.id === id); return n ? n.y : seaY; }
+function goTo(id, smooth = true) {
+  // Centre the whole entry (or its top part, if taller than the screen) so it lands in the scan band.
+  const n = id !== 'sea-level' && nodes.find(n => n.type === 'item' && n.it.id === id);
+  const y = n ? n.y - 20 + Math.min(n.h, innerHeight - 80) / 2 - innerHeight / 2 : yOf(id) - innerHeight / 2;
+  scrollTo({ top: Math.max(0, y), behavior: smooth && !REDUCED ? 'smooth' : 'auto' });
+}
+function fillJump() {
+  const sel = $('jump');
+  const up = ITEMS.filter(i => i.dir === 'up').sort((a, b) => a.v - b.v);
+  const down = ITEMS.filter(i => i.dir === 'down').sort((a, b) => a.v - b.v);
+  const grp = (label, list) => `<optgroup label="${label}">` + list.map(i => `<option value="${i.id}">${esc(i.name)} · ${fmt(i.dir, i.v).main}</option>`).join('') + '</optgroup>';
+  sel.insertAdjacentHTML('beforeend', `<option value="sea-level">Sea level · 0 m</option>` + grp('Up: sky & space', up) + grp('Down: ocean & Earth', down));
+  sel.addEventListener('change', () => { if (sel.value) goTo(sel.value); sel.value = ''; });
+  $('home').addEventListener('click', () => goTo('sea-level'));
+}
+const MAP_IDS = [['universe', 'Edge of universe'], ['andromeda', 'Andromeda'], ['proxima', 'Nearest star'], ['voyager', 'Voyager 1'], ['sun', 'The Sun'],
+  ['moon', 'The Moon'], ['iss', 'ISS'], ['karman', 'Space begins'], ['everest', 'Everest'], ['sea-level', 'Sea level'], ['titan', 'Titan implosion'],
+  ['titanic', 'Titanic'], ['challenger', 'Challenger Deep'], ['moho', 'Crust ends'], ['outercore', 'Liquid core'], ['center', 'Earth’s centre']];
+function buildMap() {
+  const track = $('track');
+  document.querySelectorAll('.map .mk').forEach(e => e.remove());
+  // Labels are nudged apart so neighbouring waypoints stay readable; the dot stays on its true mark.
+  const H = track.getBoundingClientRect().height || innerHeight * 0.8;
+  let lastY = -1e9;
+  for (const [id, label] of MAP_IDS) {
+    const trueY = yOf(id) / docH * H;
+    const y = Math.max(trueY, lastY + 17);
+    lastY = y;
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mk' + (id === 'sea-level' ? ' sealvl' : '');
+    b.innerHTML = `<span>${esc(label)}</span>`; b.style.top = (y / H * 100) + '%';
+    b.addEventListener('click', () => goTo(id));
+    track.parentNode.appendChild(b);
+  }
+  document.querySelectorAll('.map .dot').forEach(e => e.remove());
+  for (const it of ITEMS) {
+    const d = document.createElement('i');
+    d.className = 'dot' + (game.found[it.id] ? ' on' : '');
+    d.style.top = (yOf(it.id) / docH * 100) + '%';
+    mapDots[it.id] = d;
+    track.parentNode.appendChild(d);
+  }
+  track.onclick = e => {
+    const r = track.getBoundingClientRect();
+    scrollTo({ top: (e.clientY - r.top) / r.height * docH - innerHeight / 2, behavior: REDUCED ? 'auto' : 'smooth' });
+  };
+}
+// Up / down buttons on the sea-level hero step to the nearest item in that direction.
+world.addEventListener('click', e => {
+  const step = e.target.closest('[data-step]');
+  if (step) {
+    const first = ITEMS.filter(i => i.dir === (step.dataset.step === '-1' ? 'up' : 'down')).sort((a, b) => a.v - b.v)[0];
+    goTo(first.id);
+    return;
+  }
+  const open = e.target.closest('[data-open]');
+  if (open) openDetails(open.dataset.open);
+});
+
+/* ================= details dialog ================= */
+const det = $('det');
+const order = nodes.filter(n => n.type === 'item').map(n => n.it.id); // top of page → bottom
+let current = null;
+function openDetails(id) {
+  const it = byId[id]; if (!it) return;
+  current = id;
+  study(id);
+  const c = credit(id), f = fmt(it.dir, it.v);
+  const img = $('dImg');
+  if (c) {
+    img.hidden = false; img.src = c.src; img.alt = it.name;
+    $('dCred').innerHTML = `Photo: ${esc(c.artist)} · ${esc(c.license)} · <a href="${esc(c.page)}" target="_blank" rel="noopener">Wikimedia Commons</a>`;
+    $('dCred').hidden = false;
+  } else { img.hidden = true; $('dCred').hidden = true; }
+  $('dMeta').textContent = `${f.main} · ${f.sub}`;
+  $('dName').textContent = it.name;
+  $('dChips').innerHTML = `<span class="chip">${esc(it.kind)}</span>` + (it.danger ? `<span class="chip dz${it.danger}">${DANGER[it.danger]}</span>` : '');
+  $('dRange').textContent = it.range ? 'Found at: ' + it.range : '';
+  $('dRange').hidden = !it.range;
+  $('dBlurb').textContent = it.blurb;
+  $('dFacts').innerHTML = it.facts.map(x => `<li>${esc(x)}</li>`).join('');
+  $('dWiki').href = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(it.wiki);
+  const i = order.indexOf(id);
+  const prev = byId[order[i - 1]], next = byId[order[i + 1]];
+  $('dPrev').hidden = !prev; $('dNext').hidden = !next;
+  if (prev) { $('dPrev').textContent = '▲ ' + prev.name; $('dPrev').dataset.id = prev.id; }
+  if (next) { $('dNext').textContent = '▼ ' + next.name; $('dNext').dataset.id = next.id; }
+  if (!det.open) det.showModal();
+  det.scrollTop = 0;
+  goTo(id, false); // keep the page behind in step, so closing lands on this item
+}
+$('dPrev').addEventListener('click', e => openDetails(e.currentTarget.dataset.id));
+$('dNext').addEventListener('click', e => openDetails(e.currentTarget.dataset.id));
+$('dClose').addEventListener('click', () => det.close());
+det.addEventListener('click', e => { if (e.target === det) det.close(); });
+det.addEventListener('keydown', e => {
+  if (e.key === 'ArrowUp' && !$('dPrev').hidden) { e.preventDefault(); openDetails($('dPrev').dataset.id); }
+  if (e.key === 'ArrowDown' && !$('dNext').hidden) { e.preventDefault(); openDetails($('dNext').dataset.id); }
+});
+det.addEventListener('close', () => { if (current) { const b = document.querySelector(`#${current} .more`); b && b.focus({ preventScroll: true }); } });
+
+/* ================= field log: scan, collect, earn badges ================= */
+// An entry is scanned when it rests near the middle of the screen for SCAN_MS —
+// long enough that skimming past doesn't count, short enough that reading always does.
+const SAVE = 'yugen-fieldlog-v1', OLD_SAVE = 'slz-fieldlog-v1', SCAN_MS = 650;
+const game = (() => {
+  let g = null;
+  try { g = JSON.parse(localStorage.getItem(SAVE) || localStorage.getItem(OLD_SAVE)); } catch (e) { g = null; }
+  g = g && typeof g === 'object' ? g : {};
+  const clean = o => Object.fromEntries(Object.entries(o && typeof o === 'object' ? o : {}).filter(([k]) => byId[k]));
+  return { found: clean(g.found), studied: clean(g.studied), badges: g.badges && typeof g.badges === 'object' ? g.badges : {} };
+})();
+function saveGame() { try { localStorage.setItem(SAVE, JSON.stringify(game)); } catch (e) { /* private mode: keep playing unsaved */ } }
+const mapDots = {};
+const count = o => Object.keys(o).length;
+const DEADLY = ITEMS.filter(i => i.danger === 3).map(i => i.id);
+const reached = id => () => !!game.found[id];
+const BADGES = [
+  { k: 'first', name: 'First contact', desc: 'Log your first discovery', test: () => count(game.found) >= 1 },
+  { k: 'summit', name: 'Summiteer', desc: 'Log Mount Everest', test: reached('everest') },
+  { k: 'astro', name: 'Astronaut', desc: 'Cross the Kármán line into space', test: reached('karman') },
+  { k: 'moon', name: 'Moonshot', desc: 'Log the Moon', test: reached('moon') },
+  { k: 'interstellar', name: 'Interstellar', desc: 'Catch up with Voyager 1', test: reached('voyager') },
+  { k: 'edge', name: 'Edge of everything', desc: 'Reach the edge of the observable universe', test: reached('universe') },
+  { k: 'wreck', name: 'Wreck diver', desc: 'Find the Titanic', test: reached('titanic') },
+  { k: 'hadal', name: 'Hadal explorer', desc: 'Touch the bottom of Challenger Deep', test: reached('challenger') },
+  { k: 'core', name: 'Journey to the centre', desc: 'Reach the centre of the Earth', test: reached('center') },
+  { k: 'danger', name: 'Danger magnet', desc: `Log all ${DEADLY.length} things that can kill you`, test: () => DEADLY.every(id => game.found[id]) },
+  { k: 'curious', name: 'Curious mind', desc: 'Study 10 entries up close', test: () => count(game.studied) >= 10 },
+  ...[['Plant', 'Botanist', 'Log every plant and alga'], ['Star', 'Stargazer', 'Log every star'], ['Wreck', 'Wreck hunter', 'Log every shipwreck'],
+    ['Galaxy', 'Galaxy hopper', 'Log every galaxy'], ['Human', 'Record breaker', 'Log every human record-setter']]
+    .map(([kind, name, desc]) => ({ kind, ids: ITEMS.filter(i => i.kind === kind).map(i => i.id), name, desc }))
+    .filter(b => b.ids.length >= 3)
+    .map(b => ({ k: 'kind-' + b.kind, name: b.name, desc: `${b.desc} (${b.ids.length})`, test: () => b.ids.every(id => game.found[id]) })),
+  { k: 'half', name: 'Halfway there', desc: `Log ${Math.ceil(ITEMS.length / 2)} discoveries`, test: () => count(game.found) >= ITEMS.length / 2 },
+  { k: 'all', name: 'Cartographer', desc: `Log all ${ITEMS.length} — sky, sea and stone`, test: () => count(game.found) >= ITEMS.length },
+];
+const pad3 = n => String(n).padStart(3, '0');
+
+function paintCard(id) {
+  const el = $(id); if (!el) return;
+  const f = game.found[id], s = game.studied[id];
+  el.classList.toggle('found', !!f);
+  el.classList.toggle('studied', !!s);
+  el.querySelector('.st').textContent = s ? '★ Studied' : f ? '◉ Logged ' + pad3(f) : '◌ Unscanned';
+  if (mapDots[id]) mapDots[id].classList.toggle('on', !!f);
+}
+function paintMeter() {
+  const n = count(game.found);
+  $('logN').textContent = n; $('logT').textContent = ITEMS.length;
+  $('logBar').style.width = (n / ITEMS.length * 100) + '%';
+  $('badgeRow').innerHTML = BADGES.map(b => `<i class="${game.badges[b.k] ? 'on' : ''}" title="${esc(b.name)}"></i>`).join('');
+}
+function toast(html, cls = '') {
+  const box = $('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast ' + cls; t.innerHTML = html;
+  box.appendChild(t);
+  while (box.children.length > 3) box.firstElementChild.remove();
+  setTimeout(() => t.remove(), cls === 'badge' ? 4600 : 3300);
+}
+function checkBadges() {
+  for (const b of BADGES) if (!game.badges[b.k] && b.test()) {
+    game.badges[b.k] = Date.now();
+    toast(`<span class="medal"></span><span class="bt"><small>Badge unlocked</small><strong>${esc(b.name)}</strong><span>${esc(b.desc)}</span></span>`, 'badge');
+  }
+  saveGame(); paintMeter();
+}
+function discover(id, quiet) {
+  if (game.found[id]) return;
+  game.found[id] = count(game.found) + 1;
+  paintCard(id);
+  const el = $(id);
+  if (el && !quiet) { el.classList.add('just'); setTimeout(() => el.classList.remove('just'), 2300); }
+  if (!quiet) toast(`<span class="d"></span><b>${esc(byId[id].name)}</b><span class="n">logged · ${count(game.found)}/${ITEMS.length}</span>`);
+  checkBadges();
+}
+function study(id) {
+  discover(id);
+  if (game.studied[id]) return;
+  game.studied[id] = 1;
+  paintCard(id); checkBadges();
+}
+
+// Only entries near the viewport are touched on scroll.
+const itemNodes = nodes.filter(n => n.type === 'item');
+const visible = new Set(), scans = new Map();
+const nodeOf = new Map(itemNodes.map(n => [n.el, n]));
+function stopScan(n) {
+  const t = scans.get(n.it.id); if (t === undefined) return;
+  clearTimeout(t); scans.delete(n.it.id); n.el.classList.remove('scanning');
+}
+const io = new IntersectionObserver(es => {
+  for (const e of es) {
+    const n = nodeOf.get(e.target);
+    if (e.isIntersecting) visible.add(n); else { visible.delete(n); stopScan(n); }
+  }
+  queueFocus();
+}, { rootMargin: '25% 0px' });
+itemNodes.forEach(n => io.observe(n.el));
+
+let focusRaf = 0;
+function queueFocus() { if (!focusRaf) focusRaf = requestAnimationFrame(updateFocus); }
+function updateFocus() {
+  focusRaf = 0;
+  const vh = innerHeight, vc = scrollY + vh / 2;
+  for (const n of visible) {
+    const off = Math.abs(n.y - 20 + n.h / 2 - vc);
+    n.el.style.setProperty('--f', (1 - smooth(0.2, 0.72, off / vh)).toFixed(3));
+    const id = n.it.id;
+    if (game.found[id]) continue;
+    const inBand = off < Math.max(vh * 0.22, 120);
+    if (inBand && !scans.has(id)) {
+      n.el.classList.add('scanning');
+      scans.set(id, setTimeout(() => { scans.delete(id); n.el.classList.remove('scanning'); discover(id); }, SCAN_MS));
+    } else if (!inBand) stopScan(n);
+  }
+}
+document.documentElement.style.setProperty('--scan-ms', SCAN_MS + 'ms');
+
+/* logbook */
+const logD = $('logD');
+function tileHTML(it) {
+  const c = credit(it.id), f = game.found[it.id];
+  if (!f) return `<button class="tile unk" type="button" data-go="${it.id}" aria-label="Undiscovered, at ${esc(fmt(it.dir, it.v).main)}. Go there."><span class="q">?</span><span class="tn">${esc(fmt(it.dir, it.v).main)}</span></button>`;
+  return `<button class="tile" type="button" data-see="${it.id}">${c ? `<img loading="lazy" src="${esc(c.src)}" alt="">` : ''}<span class="tn">${esc(it.name)}</span>${game.studied[it.id] ? '<span class="star" aria-label="studied">★</span>' : ''}</button>`;
+}
+function openLog() {
+  const found = ITEMS.filter(i => game.found[i.id]);
+  const far = dir => { const l = found.filter(i => i.dir === dir); return l.length ? fmt(dir, Math.max(...l.map(i => i.v))).main : '—'; };
+  $('logStats').innerHTML = [['Logged', `${found.length}/${ITEMS.length}`], ['Studied', count(game.studied)], ['Highest', far('up')], ['Deepest', far('down')]]
+    .map(([k, v]) => `<div><small>${k}</small><b>${esc(v)}</b></div>`).join('');
+  $('logBadges').innerHTML = BADGES.map(b => `<div class="bg${game.badges[b.k] ? ' on' : ''}"><i></i><p><strong>${esc(b.name)}</strong>${esc(b.desc)}</p></div>`).join('');
+  const byV = dir => ITEMS.filter(i => i.dir === dir).sort((a, b) => a.v - b.v).map(tileHTML).join('');
+  $('logUp').innerHTML = byV('up'); $('logDown').innerHTML = byV('down');
+  if (!logD.open) logD.showModal();
+  logD.scrollTop = 0;
+}
+$('logBtn').addEventListener('click', openLog);
+$('logClose').addEventListener('click', () => logD.close());
+logD.addEventListener('click', e => {
+  if (e.target === logD) return logD.close();
+  const see = e.target.closest('[data-see]'), go = e.target.closest('[data-go]');
+  if (see) { logD.close(); openDetails(see.dataset.see); }
+  if (go) { logD.close(); goTo(go.dataset.go); }
+});
+$('logReset').addEventListener('click', () => {
+  if (!confirm('Wipe your field log and badges and start the expedition again?')) return;
+  game.found = {}; game.studied = {}; game.badges = {};
+  saveGame(); ITEMS.forEach(i => paintCard(i.id)); paintMeter(); openLog(); queueFocus();
+});
+
+/* ================= boot ================= */
+let bootAt = null; // { id, y }: the entry opened from the URL, until the reader scrolls away
+function relayoutKeepingPlace() {
+  const u = anchors.length ? uAtY(scrollY + innerHeight / 2) : null;
+  const stay = bootAt ? bootAt.id : null;
+  layout(); resizeGL();
+  if (stay) goTo(stay, false);
+  else if (u !== null) scrollTo(0, yAtU(u) - innerHeight / 2);
+  lastHud = ''; updateHUD(); queueFocus();
+}
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+initGL();
+fillJump();
+ITEMS.forEach(i => paintCard(i.id));
+paintMeter();
+layout();
+resizeGL();
+const start = location.hash.slice(1);
+goTo(byId[start] ? start : 'sea-level', false);
+bootAt = { id: byId[start] ? start : 'sea-level' };
+// The browser's own #fragment jump (and font swaps) can move us after boot; hold the
+// centred position until the reader takes over.
+['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => addEventListener(t, () => { bootAt = null; }, { once: true, passive: true }));
+addEventListener('load', () => { if (bootAt) goTo(bootAt.id, false); });
+updateHUD();
+queueFocus();
+addEventListener('scroll', () => { updateHUD(); queueFocus(); }, { passive: true });
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relayoutKeepingPlace, 150); });
+document.fonts && document.fonts.ready.then(relayoutKeepingPlace);
+requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>

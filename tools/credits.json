@@ -1,0 +1,1698 @@
+{
+ "draupner": {
+  "src": "img/draupner.jpg",
+  "w": 720,
+  "h": 473,
+  "artist": "NOAA",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Wea00800,1.jpg"
+ },
+ "lituya": {
+  "src": "img/lituya.jpg",
+  "w": 700,
+  "h": 440,
+  "artist": "Millar D.J., United States Geological Survey",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Lituya_Bay_trimline.jpg"
+ },
+ "burj": {
+  "src": "img/burj.jpg",
+  "w": 720,
+  "h": 481,
+  "artist": "imran shahabuddin",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Burj_Khalifa_(worlds_tallest_building)_and_the_Dubai_skyline_(25781049892).jpg"
+ },
+ "cumulus": {
+  "src": "img/cumulus.jpg",
+  "w": 720,
+  "h": 540,
+  "artist": "PiccoloNamek",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:GoldenMedows.jpg"
+ },
+ "goose": {
+  "src": "img/goose.jpg",
+  "w": 720,
+  "h": 480,
+  "artist": "Tisha Mukherjee",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Bar-headed_Goose_in_Kaziranga_National_Park_March_2025_by_Tisha_Mukherjee_02.jpg"
+ },
+ "everest": {
+  "src": "img/everest.jpg",
+  "w": 720,
+  "h": 480,
+  "artist": "Rdevany",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mt._Everest_from_Gokyo_Ri_November_5,_2012.jpg"
+ },
+ "airliner": {
+  "src": "img/airliner.jpg",
+  "w": 720,
+  "h": 482,
+  "artist": "PlanespotterA320",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:N730SW_737-7H4.jpg"
+ },
+ "vulture": {
+  "src": "img/vulture.jpg",
+  "w": 720,
+  "h": 480,
+  "artist": "Charles J. Sharp",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:R%C3%BCppell%27s_griffon_vulture_(Gyps_rueppelli_rueppelli)_Serengeti.jpg"
+ },
+ "cumulonimbus": {
+  "src": "img/cumulonimbus.jpg",
+  "w": 720,
+  "h": 481,
+  "artist": "Kamil Nowacki",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Cumulonimbus_incus_over_Warsaw,_Poland.jpg"
+ },
+ "concorde": {
+  "src": "img/concorde.jpg",
+  "w": 720,
+  "h": 478,
+  "artist": "Eduard Marmet",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:British_Airways_Concorde_G-BOAC_03.jpg"
+ },
+ "armstrong": {
+  "src": "img/armstrong.jpg",
+  "w": 720,
+  "h": 405,
+  "artist": "StratoLab - Ricerche nella stratosfera",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:High-altitude_balloon_-_ATLAS0_mission.jpg"
+ },
+ "ozone": {
+  "src": "img/ozone.jpg",
+  "w": 720,
+  "h": 479,
+  "artist": "Earth Science and Remote Sensing Unit, Lyndon B. Johnson Space Center",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:ISS041-E-105277_-_View_of_the_Northern_Territory.jpg"
+ },
+ "sr71": {
+  "src": "img/sr71.jpg",
+  "w": 720,
+  "h": 564,
+  "artist": "USAF / Judson Brohmer",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Lockheed_SR-71_Blackbird.jpg"
+ },
+ "eustace": {
+  "src": "img/eustace.jpg",
+  "w": 720,
+  "h": 960,
+  "artist": "Rico Shen",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Alan_Eustace_in_2008.jpg"
+ },
+ "meteor": {
+  "src": "img/meteor.jpg",
+  "w": 720,
+  "h": 846,
+  "artist": "Jacek Halicki",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:2016_Meteor.jpg"
+ },
+ "noctilucent": {
+  "src": "img/noctilucent.jpg",
+  "w": 720,
+  "h": 480,
+  "artist": "Matthias S\u00fc\u00dfen",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Noctilucent-clouds-msu-6817.jpg"
+ },
+ "karman": {
+  "src": "img/karman.jpg",
+  "w": 720,
+  "h": 479,
+  "artist": "Earth Science and Remote Sensing Unit, Lyndon B. Johnson Space Center",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:ISS043-E-143486_-_View_of_Earth.jpg"
+ },
+ "aurora": {
+  "src": "img/aurora.jpg",
+  "w": 720,
+  "h": 470,
+  "artist": "United States Air Force photo by Senior Airman Joshua Strang",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Aurora_borealis_over_Eielson_Air_Force_Base,_Alaska.jpg"
+ },
+ "iss": {
+  "src": "img/iss.jpg",
+  "w": 720,
+  "h": 478,
+  "artist": "NASA",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:The_station_pictured_from_the_SpaceX_Crew_Dragon_5.jpg"
+ },
+ "hubble": {
+  "src": "img/hubble.jpg",
+  "w": 720,
+  "h": 478,
+  "artist": "NASA",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Hubble_2009_close-up_2.jpg"
+ },
+ "vanallen": {
+  "src": "img/vanallen.jpg",
+  "w": 720,
+  "h": 405,
+  "artist": "NASA/Goddard Space Flight Center",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Van_Allen_Belts.ogv"
+ },
+ "gps": {
+  "src": "img/gps.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "U.S. Air Force",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:GPS_Block_IIIA.jpg"
+ },
+ "geo": {
+  "src": "img/geo.jpg",
+  "w": 220,
+  "h": 220,
+  "artist": "Lookang many thanks to author of original simulation = Francisco Esquembre author of Easy Java Simulation = Francisco Esquembre",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Geostationaryjava3D.gif"
+ },
+ "moon": {
+  "src": "img/moon.jpg",
+  "w": 720,
+  "h": 684,
+  "artist": "Gregory H. Revera",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg"
+ },
+ "jwst": {
+  "src": "img/jwst.jpg",
+  "w": 720,
+  "h": 617,
+  "artist": "NASA",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:JWST_spacecraft_model_3.png"
+ },
+ "mars": {
+  "src": "img/mars.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "Kevin Gill from Los Angeles, CA, United States",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mars_-_August_30_2021_-_Flickr_-_Kevin_M._Gill.png"
+ },
+ "sun": {
+  "src": "img/sun.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "Mat\u00fa\u0161 Motlo",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:The_Sun_in_white_light.jpg"
+ },
+ "jupiter": {
+  "src": "img/jupiter.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "NASA/JPL-Caltech/SwRI/MSSS/Kevin M. Gill",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Europa_-_Perijove_45_(cropped).png"
+ },
+ "voyager": {
+  "src": "img/voyager.jpg",
+  "w": 720,
+  "h": 522,
+  "artist": "National Aeronautics and Space Administration (NASA)",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Voyager_spacecraft_model.png"
+ },
+ "oort": {
+  "src": "img/oort.jpg",
+  "w": 720,
+  "h": 401,
+  "artist": "NASA / JPL-Caltech",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:PIA17046_-_Voyager_1_Goes_Interstellar.jpg"
+ },
+ "proxima": {
+  "src": "img/proxima.jpg",
+  "w": 604,
+  "h": 592,
+  "artist": "ESA/Hubble &amp; NASA",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:New_shot_of_Proxima_Centauri,_our_nearest_neighbour.jpg"
+ },
+ "betelgeuse": {
+  "src": "img/betelgeuse.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "ALMA (ESO/NAOJ/NRAO)/E. O\u2019Gorman/P. Kervella",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Betelgeuse_captured_by_ALMA.jpg"
+ },
+ "sgra": {
+  "src": "img/sgra.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "EHT Collaboration",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:EHT_Saggitarius_A_black_hole.tif"
+ },
+ "andromeda": {
+  "src": "img/andromeda.jpg",
+  "w": 720,
+  "h": 470,
+  "artist": "Brody Wesner",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Andromeda_Galaxy_2025.png"
+ },
+ "universe": {
+  "src": "img/universe.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "NASA and the European Space Agency.",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Hubble_ultra_deep_field.jpg"
+ },
+ "manowar": {
+  "src": "img/manowar.jpg",
+  "w": 720,
+  "h": 987,
+  "artist": "Image courtesy of Islands in the Sea 2002, NOAA/OER.",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Portuguese_Man-O-War_(Physalia_physalis).jpg"
+ },
+ "boxjelly": {
+  "src": "img/boxjelly.jpg",
+  "w": 572,
+  "h": 725,
+  "artist": "Avispa marina.jpg: Guido Gautsch, Toyota, Japan derivative work: Mithril (talk)",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Avispa_marina_cropped.png"
+ },
+ "blueringed": {
+  "src": "img/blueringed.jpg",
+  "w": 720,
+  "h": 904,
+  "artist": "Jens Petersen",
+  "license": "CC BY 2.5",
+  "page": "https://commons.wikimedia.org/wiki/File:Hapalochlaena_lunulata2.JPG"
+ },
+ "stonefish": {
+  "src": "img/stonefish.jpg",
+  "w": 720,
+  "h": 496,
+  "artist": "Karelj",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Synanceia_verrucosa_Prague_2011_2.jpg"
+ },
+ "coral": {
+  "src": "img/coral.jpg",
+  "w": 720,
+  "h": 960,
+  "artist": "Richard Ling &lt;wikipedia@rling.com&gt;",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Blue_Linckia_Starfish.JPG"
+ },
+ "orca": {
+  "src": "img/orca.jpg",
+  "w": 720,
+  "h": 478,
+  "artist": "Robert Pittman",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Killerwhales_jumping.jpg"
+ },
+ "scuba": {
+  "src": "img/scuba.jpg",
+  "w": 691,
+  "h": 691,
+  "artist": "Soljaguar",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Underwater_photograph_of_a_recreational_scuba_diver_in_Playa_del_Carmen_2006.jpg"
+ },
+ "greatwhite": {
+  "src": "img/greatwhite.jpg",
+  "w": 720,
+  "h": 501,
+  "artist": "Pterantula (Terry Goss) at en.wikipedia",
+  "license": "CC BY 2.5",
+  "page": "https://commons.wikimedia.org/wiki/File:White_shark.jpg"
+ },
+ "bluewhale": {
+  "src": "img/bluewhale.jpg",
+  "w": 720,
+  "h": 499,
+  "artist": "NOAA Photo Library",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Anim1754_-_Flickr_-_NOAA_Photo_Library.jpg"
+ },
+ "nitsch": {
+  "src": "img/nitsch.jpg",
+  "w": 427,
+  "h": 569,
+  "artist": "Heirich",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Herbert_Nitsch.jpg"
+ },
+ "humboldt": {
+  "src": "img/humboldt.jpg",
+  "w": 384,
+  "h": 280,
+  "artist": "Image courtesy of NOAA/MBARI 2006",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Dosidicus_gigas.jpg"
+ },
+ "lanternfish": {
+  "src": "img/lanternfish.jpg",
+  "w": 720,
+  "h": 250,
+  "artist": "Emma Kissling",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Myctophum_punctatum1.jpg"
+ },
+ "emperor": {
+  "src": "img/emperor.jpg",
+  "w": 720,
+  "h": 1156,
+  "artist": "Ian Duffy from UK",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Aptenodytes_forsteri_-Snow_Hill_Island,_Antarctica_-adults_and_juvenile-8.jpg"
+ },
+ "siphonophore": {
+  "src": "img/siphonophore.jpg",
+  "w": 720,
+  "h": 882,
+  "artist": "C Munro, S Siebert, F Zapata, M Howison, A Serrano, S Church, F Goetz, P Pugh, S Haddock, C Dunn",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Photographs_of_living_siphonophores.jpg"
+ },
+ "barreleye": {
+  "src": "img/barreleye.jpg",
+  "w": 720,
+  "h": 540,
+  "artist": "Unknown authorUnknown author",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Barreleye-fish_GoK.jpg"
+ },
+ "frilled": {
+  "src": "img/frilled.jpg",
+  "w": 720,
+  "h": 287,
+  "artist": "Robert Mintern",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Chlamydoselachus_anguineus1.jpg"
+ },
+ "vampire": {
+  "src": "img/vampire.jpg",
+  "w": 675,
+  "h": 431,
+  "artist": "Carl Chun",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Vampyroteuthis_illustration.jpg"
+ },
+ "giantsquid": {
+  "src": "img/giantsquid.jpg",
+  "w": 720,
+  "h": 1080,
+  "artist": "NTNU Vitenskapsmuseet",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Giant_squid_Ranheim.jpg"
+ },
+ "goblin": {
+  "src": "img/goblin.jpg",
+  "w": 720,
+  "h": 386,
+  "artist": "Michigan State University/USFWS",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Goblin_shark_(Mitsukurina_owstoni).jpg"
+ },
+ "viperfish": {
+  "src": "img/viperfish.jpg",
+  "w": 638,
+  "h": 430,
+  "artist": "Edd48",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Messina_Straits_Chauliodus_sloani.jpg"
+ },
+ "anglerfish": {
+  "src": "img/anglerfish.jpg",
+  "w": 505,
+  "h": 473,
+  "artist": "Unknown",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Humpback_anglerfish.png"
+ },
+ "fangtooth": {
+  "src": "img/fangtooth.jpg",
+  "w": 720,
+  "h": 394,
+  "artist": "Sandra Raredon/Smithsonian Institution",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Anoplogaster_cornuta_SI.jpg"
+ },
+ "gulper": {
+  "src": "img/gulper.jpg",
+  "w": 720,
+  "h": 416,
+  "artist": "Unknown",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Eurypharynx_pelecanoides.jpg"
+ },
+ "isopod": {
+  "src": "img/isopod.jpg",
+  "w": 720,
+  "h": 405,
+  "artist": "NOAA Office of Ocean Exploration and Research",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Bathynomus_giganteus_as_seen_by_remotely_operated_vehicle_(ROV)_Deep_Discoverer_at_a_depth_of_816_meters_at_South_Reed,_Gulf_of_Mexico,_2017-11-30.webm"
+ },
+ "blackswallower": {
+  "src": "img/blackswallower.jpg",
+  "w": 720,
+  "h": 262,
+  "artist": "Unknown",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Chiasmodon_niger.jpg"
+ },
+ "colossal": {
+  "src": "img/colossal.jpg",
+  "w": 720,
+  "h": 432,
+  "artist": "Middle East birds study",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Colossal_squid_size_comparison.png"
+ },
+ "greenland": {
+  "src": "img/greenland.jpg",
+  "w": 720,
+  "h": 405,
+  "artist": "NOAA Okeanos Explorer Program",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Somniosus_microcephalus_okeanos.jpg"
+ },
+ "yeti": {
+  "src": "img/yeti.jpg",
+  "w": 600,
+  "h": 620,
+  "artist": "Andrew Thurber, Oregon State University",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Yeti_crab.jpg"
+ },
+ "tubeworm": {
+  "src": "img/tubeworm.jpg",
+  "w": 720,
+  "h": 608,
+  "artist": "null",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Campagne_HOT_-_Vers_g%C3%A9ants_(Riftia_pachyptila)_(Ifremer_00530-64223_-_52381).jpg"
+ },
+ "thresher": {
+  "src": "img/thresher.jpg",
+  "w": 720,
+  "h": 568,
+  "artist": "Photographed by J.L. Snell",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:USS_Thresher;0859306.jpg"
+ },
+ "cuvier": {
+  "src": "img/cuvier.jpg",
+  "w": 720,
+  "h": 262,
+  "artist": "J\u00f6rg Mazur",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Ziphius_carvirostris.jpg"
+ },
+ "dumbo": {
+  "src": "img/dumbo.jpg",
+  "w": 720,
+  "h": 610,
+  "artist": "NOAA Okeanos Explorer",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Dumbo-hires_(cropped).jpg"
+ },
+ "titan": {
+  "src": "img/titan.jpg",
+  "w": 720,
+  "h": 407,
+  "artist": "United States Coast Guard",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Titan_submersible_on_the_ocean_floor.jpg"
+ },
+ "avgdepth": {
+  "src": "img/avgdepth.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "ABI imagery from NOAA's GOES-18 satellite",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Pacific_Ocean_as_viewed_from_GOES-18_on_September_23,_2023.jpg"
+ },
+ "titanic": {
+  "src": "img/titanic.jpg",
+  "w": 720,
+  "h": 504,
+  "artist": "Courtesy of NOAA/Institute for Exploration/University of Rhode Island (NOAA/IFE/URI).",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Titanic_wreck_bow.jpg"
+ },
+ "seapig": {
+  "src": "img/seapig.jpg",
+  "w": 720,
+  "h": 494,
+  "artist": "Lindberg",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Scotoplanes_globosa1.jpg"
+ },
+ "nodules": {
+  "src": "img/nodules.jpg",
+  "w": 720,
+  "h": 468,
+  "artist": "User Koelle on de.wikipedia",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Manganknolle.jpg"
+ },
+ "bismarck": {
+  "src": "img/bismarck.jpg",
+  "w": 720,
+  "h": 352,
+  "artist": "Unknown authorUnknown author",
+  "license": "CC BY-SA 3.0 de",
+  "page": "https://commons.wikimedia.org/wiki/File:Bundesarchiv_Bild_193-04-1-26,_Schlachtschiff_Bismarck.jpg"
+ },
+ "abyssalplain": {
+  "src": "img/abyssalplain.jpg",
+  "w": 720,
+  "h": 508,
+  "artist": "Chris_huh",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Oceanic_basin.svg"
+ },
+ "roberts": {
+  "src": "img/roberts.jpg",
+  "w": 720,
+  "h": 452,
+  "artist": "Unknown",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:USS_Samuel_B._Roberts_(DE-413)_underway_in_October_1944_(NH_96011).jpg"
+ },
+ "snailfish": {
+  "src": "img/snailfish.jpg",
+  "w": 481,
+  "h": 639,
+  "artist": "Gerringer M. E., Linley T. D., Jamieson A. J., Goetze E., Drazen J. C.",
+  "license": "CC BY 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Pseudoliparis_swirei.png"
+ },
+ "cameron": {
+  "src": "img/cameron.jpg",
+  "w": 720,
+  "h": 960,
+  "artist": "Raimond Spekking",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Deepsea_Challenger_-_Cit%C3%A9_de_la_Mer-7935.jpg"
+ },
+ "trieste": {
+  "src": "img/trieste.jpg",
+  "w": 720,
+  "h": 580,
+  "artist": "Unknown authorUnknown author",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Bathyscaphe_Trieste.jpg"
+ },
+ "challenger": {
+  "src": "img/challenger.jpg",
+  "w": 720,
+  "h": 938,
+  "artist": "wallace",
+  "license": "CC BY 2.5",
+  "page": "https://commons.wikimedia.org/wiki/File:Marianatrenchmap.png"
+ },
+ "kola": {
+  "src": "img/kola.jpg",
+  "w": 720,
+  "h": 616,
+  "artist": "Andre Belozeroff",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:%D0%9A%D0%BE%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F_%D1%81%D0%B2%D0%B5%D1%80%D1%85%D0%B3%D0%BB%D1%83%D0%B1%D0%BE%D0%BA%D0%B0%D1%8F_%D1%81%D0%BA%D0%B2%D0%B0%D0%B6%D0%B8%D0%BD%D0%B0_crop.jpg"
+ },
+ "moho": {
+  "src": "img/moho.jpg",
+  "w": 720,
+  "h": 416,
+  "artist": "KDS4444",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Subduction-en.svg"
+ },
+ "ringwoodite": {
+  "src": "img/ringwoodite.jpg",
+  "w": 639,
+  "h": 558,
+  "artist": "Jasperox",
+  "license": "CC BY 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:BlueRingwoodite.jpg"
+ },
+ "outercore": {
+  "src": "img/outercore.jpg",
+  "w": 720,
+  "h": 495,
+  "artist": "Surachit",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Earth-crust-cutaway-english.svg"
+ },
+ "innercore": {
+  "src": "img/innercore.jpg",
+  "w": 720,
+  "h": 446,
+  "artist": "IsadoraofIbiza",
+  "license": "CC BY 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Earth_Internal_Structure.svg"
+ },
+ "center": {
+  "src": "img/center.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "CharlesC",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Earth_cutaway.png"
+ },
+ "hyperion": {
+  "src": "img/hyperion.jpg",
+  "w": 720,
+  "h": 540,
+  "artist": "User:Introvert",
+  "license": "CC BY 2.5",
+  "page": "https://commons.wikimedia.org/wiki/File:Redwood-national-park-Sequoia.250ft.jpg"
+ },
+ "stratos": {
+  "src": "img/stratos.jpg",
+  "w": 720,
+  "h": 1080,
+  "artist": "Ank kumar",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Felix_Baumgartner,_Red_Bull_Stratos,_Hangar_7_(Ank_Kumar,_Infosys_Limited)_01.jpg"
+ },
+ "bu60": {
+  "src": "img/bu60.jpg",
+  "w": 720,
+  "h": 406,
+  "artist": "NASA Goddard Space Flight Center / Sophia Roberts",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:The_Scientific_balloon_eclipses_the_sun_as_it_fills_with_helium,_and_the_High_Altitude_Student_Platform_awaits_launch_(GSFC2024HASP0202).jpg"
+ },
+ "gabr": {
+  "src": "img/gabr.jpg",
+  "w": 720,
+  "h": 473,
+  "artist": "D. Kesling",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:TechDiving_NOAA.jpg"
+ },
+ "blobfish": {
+  "src": "img/blobfish.jpg",
+  "w": 720,
+  "h": 284,
+  "artist": "Alan Riverstone McCulloch (1885-1925)",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Psychrolutes_marcidus.jpg"
+ },
+ "amphipod": {
+  "src": "img/amphipod.jpg",
+  "w": 720,
+  "h": 540,
+  "artist": "Daiju Azuma",
+  "license": "CC BY-SA 2.5",
+  "page": "https://commons.wikimedia.org/wiki/File:Hirondellea_gigas.jpg"
+ },
+ "sherman": {
+  "src": "img/sherman.jpg",
+  "w": 720,
+  "h": 1637,
+  "artist": "Kimon Berlin",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:General_Sherman_1469870071.jpg"
+ },
+ "liberty": {
+  "src": "img/liberty.jpg",
+  "w": 960,
+  "h": 1471,
+  "artist": "AskALotl",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Front_view_of_Statue_of_Liberty_(cropped).jpg"
+ },
+ "eiffel": {
+  "src": "img/eiffel.jpg",
+  "w": 960,
+  "h": 1599,
+  "artist": "Benh LIEU SONG",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Tour_Eiffel_Wikimedia_Commons_(cropped).jpg"
+ },
+ "skytree": {
+  "src": "img/skytree.jpg",
+  "w": 960,
+  "h": 1471,
+  "artist": "Kakidai",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Tokyo_Skytree_2014_%E2%85%A2.jpg"
+ },
+ "bennevis": {
+  "src": "img/bennevis.jpg",
+  "w": 960,
+  "h": 720,
+  "artist": "Thincat",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:BenNevis2005.jpg"
+ },
+ "machu": {
+  "src": "img/machu.jpg",
+  "w": 960,
+  "h": 640,
+  "artist": "Draceane",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Machu_Picchu,_2023_(012).jpg"
+ },
+ "bristlecone": {
+  "src": "img/bristlecone.jpg",
+  "w": 720,
+  "h": 898,
+  "artist": "Dcrjsr",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Big_bristlecone_pine_Pinus_longaeva.jpg"
+ },
+ "potala": {
+  "src": "img/potala.jpg",
+  "w": 960,
+  "h": 540,
+  "artist": "Lhasa Government",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Potala_Palace_HQ.jpg"
+ },
+ "fuji": {
+  "src": "img/fuji.jpg",
+  "w": 960,
+  "h": 469,
+  "artist": "Suicasmo",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:View_of_Mount_Fuji_from_%C5%8Cwakudani_20211202.jpg"
+ },
+ "puya": {
+  "src": "img/puya.jpg",
+  "w": 960,
+  "h": 1280,
+  "artist": "Pepe Roque",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Puya_raimondii_h%C3%A1bito.jpg"
+ },
+ "maunakea": {
+  "src": "img/maunakea.jpg",
+  "w": 960,
+  "h": 720,
+  "artist": "Vadim Kurland",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mauna_Kea_from_the_ocean.jpg"
+ },
+ "montblanc": {
+  "src": "img/montblanc.jpg",
+  "w": 960,
+  "h": 720,
+  "artist": "Hseugut",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mont_Blanc_Aiguille.jpg"
+ },
+ "alma": {
+  "src": "img/alma.jpg",
+  "w": 960,
+  "h": 640,
+  "artist": "Iztok Bon\u010dina/ESO",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:ALMA_Antennas_on_Chajnantor.jpg"
+ },
+ "rinconada": {
+  "src": "img/rinconada.jpg",
+  "w": 960,
+  "h": 720,
+  "artist": "yo",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Rinconadapuno.JPG"
+ },
+ "kilimanjaro": {
+  "src": "img/kilimanjaro.jpg",
+  "w": 960,
+  "h": 642,
+  "artist": "Sergey Pesterev",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Kilimanjaro_from_Amboseli.jpg"
+ },
+ "sandwort": {
+  "src": "img/sandwort.jpg",
+  "w": 960,
+  "h": 711,
+  "artist": "Woudloper",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Whf_white_26.jpg"
+ },
+ "chimborazo": {
+  "src": "img/chimborazo.jpg",
+  "w": 960,
+  "h": 630,
+  "artist": "Dick Culbert from Gibsons, B.C., Canada",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Chimborazo,_aspecto_norte,_Ecuador._(26354503702).jpg"
+ },
+ "chough": {
+  "src": "img/chough.jpg",
+  "w": 960,
+  "h": 1306,
+  "artist": "Jim Higham from UK",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Alpine_Chough_by_Jim_Higham.jpg"
+ },
+ "k2": {
+  "src": "img/k2.jpg",
+  "w": 960,
+  "h": 720,
+  "artist": "Zacharie Grossen",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Chogori.jpg"
+ },
+ "piccard": {
+  "src": "img/piccard.jpg",
+  "w": 960,
+  "h": 952,
+  "artist": "Planet News (Agence de presse). Agence photographique (commanditaire)",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Auguste_Piccard.jpg"
+ },
+ "nacreous": {
+  "src": "img/nacreous.jpg",
+  "w": 960,
+  "h": 720,
+  "artist": "Alan Light from Charlotte, USA. At Commons: Alan R Light (talk \u00b7 contribs)",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Nacreous_clouds_Antarctica.jpg"
+ },
+ "u2": {
+  "src": "img/u2.jpg",
+  "w": 960,
+  "h": 641,
+  "artist": "United States Department of the Air Force",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Usaf.u2.750pix.jpg"
+ },
+ "helios": {
+  "src": "img/helios.jpg",
+  "w": 960,
+  "h": 634,
+  "artist": "NASA",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Helios_in_flight.jpg"
+ },
+ "kittinger": {
+  "src": "img/kittinger.jpg",
+  "w": 960,
+  "h": 1192,
+  "artist": "U.S. Air Force",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Joseph_Kittinger,_Jr.jpg"
+ },
+ "mig25": {
+  "src": "img/mig25.jpg",
+  "w": 960,
+  "h": 639,
+  "artist": "Leonid Faerberg (transport-photo.com)",
+  "license": "GFDL 1.2",
+  "page": "https://commons.wikimedia.org/wiki/File:Russian_Air_Force_MiG-25.jpg"
+ },
+ "bluejet": {
+  "src": "img/bluejet.png",
+  "w": 800,
+  "h": 600,
+  "artist": "National Oceanic and Atmospheric Administration (NOAA)",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Lightning_sprites.png"
+ },
+ "hunga": {
+  "src": "img/hunga.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "Japan Meteorological Agency (satellite), Digital Typhoon (website)",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Tonga_Volcano_Eruption_2022-01-15_0320Z_to_0610Z_Himawari-8_visible.gif"
+ },
+ "sprite": {
+  "src": "img/sprite.jpg",
+  "w": 960,
+  "h": 640,
+  "artist": "Matthew Dominick",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Sprite_over_Southeast_Asia_from_ISS.jpg"
+ },
+ "tiangong": {
+  "src": "img/tiangong.jpg",
+  "w": 960,
+  "h": 960,
+  "artist": "Shujianyang",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Chinese_Tiangong_Space_Station.jpg"
+ },
+ "starlink": {
+  "src": "img/starlink.png",
+  "w": 960,
+  "h": 1195,
+  "artist": "Starlink Services, LLC",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Starlink_Logo_2024.svg"
+ },
+ "artemis2": {
+  "src": "img/artemis2.jpg",
+  "w": 960,
+  "h": 640,
+  "artist": "NASA",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Earthset_(art002e009288).jpg"
+ },
+ "venus": {
+  "src": "img/venus.jpg",
+  "w": 960,
+  "h": 960,
+  "artist": "NASA/JPL-Caltech",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Venus_from_Mariner_10.jpg"
+ },
+ "ceres": {
+  "src": "img/ceres.jpg",
+  "w": 852,
+  "h": 836,
+  "artist": "Justin Cowart",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Ceres_-_RC3_-_Haulani_Crater_(22381131691)_(cropped).jpg"
+ },
+ "saturn": {
+  "src": "img/saturn.png",
+  "w": 960,
+  "h": 384,
+  "artist": "NASA / JPL-Caltech / SSI / color composite by Gordan Ugarkovic",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Saturn_global_view_from_Cassini,_rings_open_Better_Colour.png"
+ },
+ "uranus": {
+  "src": "img/uranus.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "Ardenau4",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Uranus_Voyager2_color_calibrated.png"
+ },
+ "neptune": {
+  "src": "img/neptune.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "NASA / Voyager 2 / PDS / OPUS / Ardenau4",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Neptune_Voyager2_color_calibrated.png"
+ },
+ "pluto": {
+  "src": "img/pluto.jpg",
+  "w": 720,
+  "h": 720,
+  "artist": "NASA/Johns Hopkins University Applied Physics Laboratory/Southwest Research Institute/Alex Parker",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Pluto_in_True_Color_-_High-Res.png"
+ },
+ "newhorizons": {
+  "src": "img/newhorizons.jpg",
+  "w": 720,
+  "h": 671,
+  "artist": "National Aeronautics and Space Administration (NASA), Applied Physics Laboratory",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:New_Horizons_spacecraft_model_1.png"
+ },
+ "sedna": {
+  "src": "img/sedna.jpg",
+  "w": 320,
+  "h": 320,
+  "artist": "NASA",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Sedna_PRC2004-14d.jpg"
+ },
+ "heliopause": {
+  "src": "img/heliopause.jpg",
+  "w": 720,
+  "h": 405,
+  "artist": "NASA/JPL-Caltech",
+  "license": "See source",
+  "page": "https://commons.wikimedia.org/wiki/File:PIA22835-VoyagerProgram%26Heliosphere-Chart-20181210.png"
+ },
+ "voyager2": {
+  "src": "img/voyager2.png",
+  "w": 960,
+  "h": 696,
+  "artist": "National Aeronautics and Space Administration (NASA)",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Voyager_spacecraft_model.png"
+ },
+ "alphacen": {
+  "src": "img/alphacen.jpg",
+  "w": 720,
+  "h": 731,
+  "artist": "Digitized Sky Survey 2. Acknowledgement: Davide De Martin/Mahdi Zamani",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:The_sky_around_Alpha_Centauri_and_Proxima_Centauri_(eso1629i).jpg"
+ },
+ "sirius": {
+  "src": "img/sirius.png",
+  "w": 960,
+  "h": 960,
+  "artist": "Canis_major_constellation_map.png: Torsten Bronger. derivative work: Kxx (talk)",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Canis_Major_constellation_map.svg"
+ },
+ "vega": {
+  "src": "img/vega.png",
+  "w": 960,
+  "h": 1293,
+  "artist": "Lyra_constellation_map.png: Torsten Bronger derivative work: Kxx (talk)",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Lyra_constellation_map.svg"
+ },
+ "trappist1": {
+  "src": "img/trappist1.png",
+  "w": 500,
+  "h": 500,
+  "artist": "Processing and color compositing by Nrco0e; original images by Sloan Digital Sky Survey",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:TRAPPIST-1_SDSS_2009-09-28_square_crop.png"
+ },
+ "polaris": {
+  "src": "img/polaris.png",
+  "w": 960,
+  "h": 960,
+  "artist": "Ursa Minor constellation map.png: Torsten Bronger / derivative work: Kxx",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Ursa_Minor_constellation_map.svg"
+ },
+ "pleiades": {
+  "src": "img/pleiades.jpg",
+  "w": 960,
+  "h": 692,
+  "artist": "NASA, ESA, AURA/Caltech, Palomar Observatory The science team consists of: D. Soderblom and E. Nelan (STScI), F. Benedict and B. Arthur (U. Texas), and B. Jones (Lick Obs.)",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Pleiades_large.jpg"
+ },
+ "orionnebula": {
+  "src": "img/orionnebula.jpg",
+  "w": 960,
+  "h": 960,
+  "artist": "NASA, ESA, M. Robberto (Space Telescope Science Institute/ESA) and the Hubble Space Telescope Orion Treasury Project Team",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg"
+ },
+ "crab": {
+  "src": "img/crab.jpg",
+  "w": 960,
+  "h": 960,
+  "artist": "NASA, ESA, J. Hester and A. Loll (Arizona State University)",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Crab_Nebula.jpg"
+ },
+ "etacarinae": {
+  "src": "img/etacarinae.jpg",
+  "w": 960,
+  "h": 959,
+  "artist": "Jon Morse (University of Colorado) &amp; NASA Hubble Space Telescope",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Eta_Carinae.jpg"
+ },
+ "lmc": {
+  "src": "img/lmc.jpg",
+  "w": 960,
+  "h": 788,
+  "artist": "Robert Gendler/ESO",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Eso1021d.jpg"
+ },
+ "triangulum": {
+  "src": "img/triangulum.jpg",
+  "w": 960,
+  "h": 1145,
+  "artist": "ESO",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:VST_snaps_a_very_detailed_view_of_the_Triangulum_Galaxy.jpg"
+ },
+ "whirlpool": {
+  "src": "img/whirlpool.jpg",
+  "w": 960,
+  "h": 666,
+  "artist": "NASA and European Space Agency",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Messier51_sRGB.jpg"
+ },
+ "m87": {
+  "src": "img/m87.jpg",
+  "w": 960,
+  "h": 960,
+  "artist": "en:NASA, en:STScI, en:WikiSky",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Messier_87_Hubble_WikiSky.jpg"
+ },
+ "stephan": {
+  "src": "img/stephan.jpg",
+  "w": 960,
+  "h": 1070,
+  "artist": "NASA, ESA, and the Hubble SM4 ERO Team",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Stephan%27s_Quintet_Hubble_2009.full_denoise.jpg"
+ },
+ "3c273": {
+  "src": "img/3c273.jpg",
+  "w": 960,
+  "h": 948,
+  "artist": "Hubble ESA",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Best_image_of_bright_quasar_3C_273_(10953173335).jpg"
+ },
+ "ton618": {
+  "src": "img/ton618.jpg",
+  "w": 237,
+  "h": 237,
+  "artist": "Sloan Digital Sky Survey, Apache Point Observatory, Astrophysical Research Consortium",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:TON_618_SDSS9_version_3.jpg"
+ },
+ "gnz11": {
+  "src": "img/gnz11.jpg",
+  "w": 960,
+  "h": 672,
+  "artist": "NASA, ESA, P. Oesch (Yale University), G. Brammer (STScI), P. van Dokkum (Yale University), and G. Illingworth (University of California, Santa Cruz)",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Distant_galaxy_GN-z11_in_GOODS-N_image_by_HST.jpg"
+ },
+ "jadesz14": {
+  "src": "img/jadesz14.jpg",
+  "w": 720,
+  "h": 704,
+  "artist": "NASA, ESA, CSA, STScI, Brant Robertson (UC Santa Cruz), Ben Johnson (CfA), Sandro Tacchella (Cambridge), Phill Cargile (CfA)",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:JADES-GS-z14-0_NASA.png"
+ },
+ "cmb": {
+  "src": "img/cmb.jpg",
+  "w": 960,
+  "h": 480,
+  "artist": "ESA and the Planck Collaboration",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Cosmic_Microwave_Background_(CMB).jpeg"
+ },
+ "phyto": {
+  "src": "img/phyto.jpg",
+  "w": 720,
+  "h": 540,
+  "artist": "University of Rhode Island/Stephanie Anderson",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Mixed_phytoplankton_community_2.png"
+ },
+ "sargassum": {
+  "src": "img/sargassum.jpg",
+  "w": 600,
+  "h": 450,
+  "artist": "Unknown authorUnknown author",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Sargassum_weeds_closeup.jpg"
+ },
+ "mangrove": {
+  "src": "img/mangrove.jpg",
+  "w": 960,
+  "h": 1440,
+  "artist": "Ariefrahman",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Sonneratia_alba_-_Manado_(2).JPG"
+ },
+ "seaotter": {
+  "src": "img/seaotter.jpg",
+  "w": 720,
+  "h": 658,
+  "artist": "Marshal Hedin from San Diego",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Sea_Otter_(Enhydra_lutris)_(25169790524)_crop.jpg"
+ },
+ "manatee": {
+  "src": "img/manatee.jpg",
+  "w": 960,
+  "h": 630,
+  "artist": "Galen Rathbun",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Manatee_with_calf.PD_-_colour_corrected.jpg"
+ },
+ "clownfish": {
+  "src": "img/clownfish.jpg",
+  "w": 960,
+  "h": 643,
+  "artist": "Ritiks",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Clown_fish_in_the_Andaman_Coral_Reef.jpg"
+ },
+ "seahorse": {
+  "src": "img/seahorse.jpg",
+  "w": 960,
+  "h": 1280,
+  "artist": "Hans Hillewaert",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Hippocampus_hippocampus_(on_Ascophyllum_nodosum).jpg"
+ },
+ "greenturtle": {
+  "src": "img/greenturtle.jpg",
+  "w": 960,
+  "h": 640,
+  "artist": "Charles J. Sharp",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Green_sea_turtle_(Chelonia_mydas)_Moorea.jpg"
+ },
+ "arizona": {
+  "src": "img/arizona.jpg",
+  "w": 960,
+  "h": 406,
+  "artist": "Photographer: Unknown Retouched by: Mmxx",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Arizona_(BB39)_Port_Bow,_Underway_-_NARA_-_5900075_-_1930.jpg"
+ },
+ "posidonia": {
+  "src": "img/posidonia.jpg",
+  "w": 960,
+  "h": 720,
+  "artist": "Fr\u00e9d\u00e9ric Ducarme",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Posidonia_oceanica_(L).jpg"
+ },
+ "seadragon": {
+  "src": "img/seadragon.jpg",
+  "w": 960,
+  "h": 639,
+  "artist": "James Rosindell",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Leafy_Seadragon_on_Kangaroo_Island.jpg"
+ },
+ "christabyss": {
+  "src": "img/christabyss.jpg",
+  "w": 400,
+  "h": 300,
+  "artist": "The original uploader was Yoruno at Italian Wikipedia.",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Cristo_degli_abissi.jpg"
+ },
+ "aquarius": {
+  "src": "img/aquarius.jpg",
+  "w": 960,
+  "h": 720,
+  "artist": "NASA",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Aquarius_exterior_(whole).jpg"
+ },
+ "kelp": {
+  "src": "img/kelp.jpg",
+  "w": 240,
+  "h": 313,
+  "artist": "Kip Evans",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Kelp_forest.jpg"
+ },
+ "yongala": {
+  "src": "img/yongala.jpg",
+  "w": 960,
+  "h": 569,
+  "artist": "Allan C. Green",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Yongala_(ship,_1903)_-_SLV_H91.108-2943.jpg"
+ },
+ "lionfish": {
+  "src": "img/lionfish.jpg",
+  "w": 960,
+  "h": 695,
+  "artist": "Photo by Jens Petersen, Edited by User:Olegiwit (cloned in part of fins) and Fir0002 (removed spots and noise)",
+  "license": "CC BY 2.5",
+  "page": "https://commons.wikimedia.org/wiki/File:Pterois_volitans_Manado-e_edit.jpg"
+ },
+ "mantaray": {
+  "src": "img/mantaray.jpg",
+  "w": 960,
+  "h": 637,
+  "artist": "Shiyam ElkCloner",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Dharavandhoo_Thila_-_Manata_Black_Pearl.JPG"
+ },
+ "gpoctopus": {
+  "src": "img/gpoctopus.jpg",
+  "w": 960,
+  "h": 720,
+  "artist": "NOAA/R. N. Lea [1]",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Enteroctopus_dolfeini.jpg"
+ },
+ "whaleshark": {
+  "src": "img/whaleshark.jpg",
+  "w": 960,
+  "h": 480,
+  "artist": "Abe Khao Lak",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Similan_Dive_Center_-_great_whale_shark.jpg"
+ },
+ "lusitania": {
+  "src": "img/lusitania.jpg",
+  "w": 960,
+  "h": 617,
+  "artist": "George Grantham Bain",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:RMS_Lusitania_coming_into_port,_possibly_in_New_York,_1907-13-crop.jpg"
+ },
+ "britannic": {
+  "src": "img/britannic.jpg",
+  "w": 960,
+  "h": 552,
+  "artist": "Allan C. Green",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:HMHS_Britannic.jpg"
+ },
+ "bluehole": {
+  "src": "img/bluehole.jpg",
+  "w": 662,
+  "h": 515,
+  "artist": "U.S. Geological Survey (USGS)",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Great_Blue_Hole.jpg"
+ },
+ "hammerhead": {
+  "src": "img/hammerhead.jpg",
+  "w": 960,
+  "h": 590,
+  "artist": "Kris-Mikael Krister",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Scalloped_hammerhead_shark_(Sphyrna_lewini)_Costa_Rica_(cropped).jpg"
+ },
+ "coelacanth": {
+  "src": "img/coelacanth.jpg",
+  "w": 720,
+  "h": 432,
+  "artist": "Bruce A.S. Henderson",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Coelacanth_off_Pumula_on_the_KwaZulu-Natal_South_Coast,_South_Africa,_on_22_November_2019.png"
+ },
+ "deansbluehole": {
+  "src": "img/deansbluehole.jpg",
+  "w": 960,
+  "h": 380,
+  "artist": "Oceanwave77",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Dean%E2%80%99s_Blue_Hole.jpg"
+ },
+ "oarfish": {
+  "src": "img/oarfish.jpg",
+  "w": 960,
+  "h": 361,
+  "artist": "Sandstein",
+  "license": "CC BY 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Regalecus_glesne,_Naturhistorisches_Museum_Wien.jpg"
+ },
+ "nautilus": {
+  "src": "img/nautilus.jpg",
+  "w": 960,
+  "h": 640,
+  "artist": "Hans Hillewaert",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Nautilus_pompilius_(detail).jpg"
+ },
+ "yamato": {
+  "src": "img/yamato.jpg",
+  "w": 960,
+  "h": 491,
+  "artist": "Hasuya Hirohata",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Japanese_battleship_Yamato_running_trials_off_Bungo_Strait,_20_October_1941.jpg"
+ },
+ "bluefin": {
+  "src": "img/bluefin.jpg",
+  "w": 960,
+  "h": 633,
+  "artist": "Unknown authorUnknown author",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Bluefin-big.jpg"
+ },
+ "swordfish": {
+  "src": "img/swordfish.jpg",
+  "w": 960,
+  "h": 640,
+  "artist": "Naturalis Biodiversity Center",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Xiphias_gladius_Linnaeus,_1758_2599925021.jpg"
+ },
+ "bathysphere": {
+  "src": "img/bathysphere.jpg",
+  "w": 960,
+  "h": 1280,
+  "artist": "Mike Cole",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Bathysphere.jpg"
+ },
+ "whalefall": {
+  "src": "img/whalefall.jpg",
+  "w": 960,
+  "h": 720,
+  "artist": "Craig Smith NOAA",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Whalefall_hires.jpg"
+ },
+ "leatherback": {
+  "src": "img/leatherback.jpg",
+  "w": 960,
+  "h": 559,
+  "artist": "U.S. Fish and Wildlife Service Southeast Region",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Leatherback_sea_turtle_Tinglar,_USVI_(5839996547).jpg"
+ },
+ "brooder": {
+  "src": "img/brooder.jpg",
+  "w": 594,
+  "h": 594,
+  "artist": "NOAA/MBARI",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Graneledone_boreopacifica_2.jpg"
+ },
+ "eseal": {
+  "src": "img/eseal.jpg",
+  "w": 960,
+  "h": 768,
+  "artist": "Mike Baird",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mating_scene_with_elevated_Alpha_Male._Elephant_Seals_of_Piedras_Blancas.jpg"
+ },
+ "smoker": {
+  "src": "img/smoker.jpg",
+  "w": 960,
+  "h": 1415,
+  "artist": "P. Rona / OAR/National Undersea Research Program (NURP); NOAA",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Blacksmoker_in_Atlantic_Ocean.jpg"
+ },
+ "spermwhale": {
+  "src": "img/spermwhale.jpg",
+  "w": 960,
+  "h": 540,
+  "artist": "Gabriel Barathieu",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mother_and_baby_sperm_whale.jpg"
+ },
+ "mponeng": {
+  "src": "img/mponeng.jpg",
+  "w": 960,
+  "h": 471,
+  "artist": "JMK",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mponeng-goudmyn,_Merafong_City-pm,_Wesrand-dm,_a.jpg"
+ },
+ "pompeii": {
+  "src": "img/pompeii.jpg",
+  "w": 640,
+  "h": 580,
+  "artist": "National Science Foundation (University of Delaware College of Marine Studies)",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Alvinella_pompejana01.jpg"
+ },
+ "scalyfoot": {
+  "src": "img/scalyfoot.png",
+  "w": 491,
+  "h": 402,
+  "artist": "Chong Chen, Katsuyuki Uematsu, Katrin Linse &amp; Julia D. Sigwart",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Chrysomallon_squamiferum_9.png"
+ },
+ "endurance": {
+  "src": "img/endurance.jpg",
+  "w": 960,
+  "h": 1328,
+  "artist": "Frank Hurley",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Endurance_under_full_sail_Frank_Hurley_State_Library_NSW_a090012h.jpg"
+ },
+ "coldseep": {
+  "src": "img/coldseep.jpg",
+  "w": 720,
+  "h": 758,
+  "artist": "(Photo: Charles Fisher)",
+  "license": "CC BY 2.5",
+  "page": "https://commons.wikimedia.org/wiki/File:Lamellibrachia_luymesi1.png"
+ },
+ "chicken": {
+  "src": "img/chicken.jpg",
+  "w": 391,
+  "h": 391,
+  "artist": "Image courtesy of Expedition to the Deep Slope 2007.",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Enypniastes_sp.jpg"
+ },
+ "tripod": {
+  "src": "img/tripod.jpg",
+  "w": 960,
+  "h": 960,
+  "artist": "null",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Campagne_BIOZAIRE_2_-_Poisson_tr%C3%A9pied_ou_poisson_tripode_(Ifremer_00574-68561)_1.jpg"
+ },
+ "yellow": {
+  "src": "img/yellow.jpg",
+  "w": 960,
+  "h": 632,
+  "artist": "Ed Austin/Herb Jones",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_River_in_Hayden_Valley.jpg"
+ },
+ "indy": {
+  "src": "img/indy.jpg",
+  "w": 960,
+  "h": 540,
+  "artist": "Unknown authorUnknown author",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:USS_Indianapolis_(CA-35)_underway_at_sea_on_27_September_1939_(80-G-425615).jpg"
+ },
+ "johnston": {
+  "src": "img/johnston.jpg",
+  "w": 960,
+  "h": 721,
+  "artist": "Adam Cuerden",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:USS_Johnston_(DD-557)_underway_on_27_October_1943_(NH_63495).jpg"
+ },
+ "jiaolong": {
+  "src": "img/jiaolong.jpg",
+  "w": 960,
+  "h": 640,
+  "artist": "N509FZ",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Model_of_Jiaolong_submersible_at_the_Five-Year_Achievements_Exhibition_(20171015152538).jpg"
+ },
+ "prtrench": {
+  "src": "img/prtrench.png",
+  "w": 420,
+  "h": 230,
+  "artist": "The original uploader was Vsmith at English Wikipedia.",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Caribbean-map.png"
+ },
+ "oceancrust": {
+  "src": "img/oceancrust.jpg",
+  "w": 720,
+  "h": 479,
+  "artist": "FCrameri",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Global_Map_of_Oceanic_Plate_Age_by_Fabio_Crameri.png"
+ },
+ "xeno": {
+  "src": "img/xeno.jpg",
+  "w": 600,
+  "h": 514,
+  "artist": "NOAA",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:XenophyophoreNOAA.jpg"
+ },
+ "horizon": {
+  "src": "img/horizon.jpg",
+  "w": 585,
+  "h": 897,
+  "artist": "Unknown",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Kermadec_Arc.jpg"
+ },
+ "contcrust": {
+  "src": "img/contcrust.jpg",
+  "w": 720,
+  "h": 436,
+  "artist": "USGS and me. I made a better labeling.",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Continental_and_oceanic_crust.png"
+ },
+ "lab": {
+  "src": "img/lab.png",
+  "w": 766,
+  "h": 529,
+  "artist": "Nealey Sims",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Earth%27s_Inner_Layers_denoting_the_LAB.png"
+ },
+ "diamond": {
+  "src": "img/diamond.jpg",
+  "w": 960,
+  "h": 891,
+  "artist": "DGPC/ADF Lu\u00edsa Oliveira",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Rough_Diamond.jpg"
+ },
+ "lowmantle": {
+  "src": "img/lowmantle.png",
+  "w": 960,
+  "h": 594,
+  "artist": "IsadoraofIbiza",
+  "license": "CC BY 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Earth_Internal_Structure.svg"
+ },
+ "deepquake": {
+  "src": "img/deepquake.jpg",
+  "w": 425,
+  "h": 305,
+  "artist": "USGS",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Kuril_Benioff_zone.JPG"
+ },
+ "hawaii": {
+  "src": "img/hawaii.jpg",
+  "w": 960,
+  "h": 509,
+  "artist": "Joel E. Robinson, USGS.",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Hawaii_hotspot_cross-sectional_diagram.jpg"
+ },
+ "llsvp": {
+  "src": "img/llsvp.jpg",
+  "w": 440,
+  "h": 433,
+  "artist": "Sanne.cottaar",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:LLSVP.gif"
+ },
+ "dynamo": {
+  "src": "img/dynamo.png",
+  "w": 960,
+  "h": 960,
+  "artist": "Andrew Z. Colvin",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Dynamo_Theory_-_Outer_core_convection_and_magnetic_field_generation.svg"
+ },
+ "imic": {
+  "src": "img/imic.jpg",
+  "w": 960,
+  "h": 962,
+  "artist": "Dixon Rohr",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:608134main_world-orig_full.jpg"
+ }
+}
