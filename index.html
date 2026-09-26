@@ -43,7 +43,12 @@
   --side: 300px;
   --gutter: clamp(56px, calc(50vw - var(--card-w) - var(--side)), 240px);
 }
-html { scroll-behavior: auto; }
+html { scroll-behavior: auto; scrollbar-width: none; }
+html::-webkit-scrollbar { width: 0; height: 0; }
+/* while a dialog is up, the page behind it stays exactly where it was */
+/* overflow alone stops wheel and touch panning of the page; the dialog keeps its own scrolling
+   (touch-action here would be inherited by the dialog and freeze it on phones) */
+html.modal, html.modal body { overflow: hidden; overscroll-behavior: none; }
 body {
   background: var(--bg);
   color: var(--ink);
@@ -137,10 +142,13 @@ body {
   -webkit-mask-image: var(--m); mask-image: var(--m); -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
   -webkit-mask-position: center; mask-position: center; -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
   transform: perspective(900px) rotateX(calc(var(--my, 0) * -3deg)) rotateY(calc(var(--mx, 0) * 4deg));
-  transition: transform .5s cubic-bezier(.2, .7, .2, 1), -webkit-mask-size .7s cubic-bezier(.2, .7, .2, 1), mask-size .7s cubic-bezier(.2, .7, .2, 1); }
+  transition: transform .5s cubic-bezier(.2, .7, .2, 1); }
 .card.L .ph { margin-left: -14%; }
 .card.R .ph { margin-right: -14%; }
-.card:hover .ph { -webkit-mask-size: 135% 135%; mask-size: 135% 135%; }
+/* the feather stays put on hover — growing the mask would uncover the photo's straight edges.
+   The bloom comes from the image itself instead: a little more scale, light and colour. */
+.card:hover .ph img { transform: scale(1.18) translate(calc(var(--mx, 0) * -2.5%), calc(var(--my, 0) * -2%)); }
+.card.found:hover .ph img { filter: brightness(1.12) saturate(1.06); }
 .ph img { width: 100%; height: 100%; object-fit: cover; display: block;
   transform: scale(1.1) translate(calc(var(--mx, 0) * -2.5%), calc(var(--my, 0) * -2%));
   transition: transform .6s cubic-bezier(.2, .7, .2, 1), filter 1.1s ease, opacity 1.1s ease; }
@@ -203,11 +211,21 @@ body {
 .hud .home { cursor: pointer; white-space: nowrap; }
 .hud .home:hover { border-color: var(--readout); }
 
-/* ---------- mini-map ---------- */
+/* scrollable panels keep a bar, but a thin one in the page's own colours */
+dialog.det, .rack { scrollbar-width: thin; scrollbar-color: rgba(127, 230, 255, .38) transparent; }
+dialog.det::-webkit-scrollbar, .rack::-webkit-scrollbar { width: 9px; height: 9px; }
+dialog.det::-webkit-scrollbar-track, .rack::-webkit-scrollbar-track { background: transparent; }
+dialog.det::-webkit-scrollbar-thumb, .rack::-webkit-scrollbar-thumb { border-radius: 99px; border: 3px solid transparent;
+  background: rgba(127, 230, 255, .4); background-clip: content-box; }
+dialog.det::-webkit-scrollbar-thumb:hover, .rack::-webkit-scrollbar-thumb:hover { background: rgba(127, 230, 255, .75); background-clip: content-box; }
+
+/* ---------- mini-map: also the page's scrollbar ---------- */
 .map { position: fixed; z-index: 5; right: 18px; top: 10vh; height: 80vh; width: 150px; }
-.map .track { position: absolute; right: 6px; top: 0; bottom: 0; width: 3px; border-radius: 2px; cursor: pointer;
+.map .track { position: absolute; right: 6px; top: 0; bottom: 0; width: 3px; border-radius: 2px; cursor: grab; touch-action: none;
   background: linear-gradient(#000 0%, #081c46 44%, #8fd0ee 49.5%, #1f9ec0 50.5%, #041a33 60%, #010408 70%, #3a1206 85%, #ffb24a 100%); }
-.map .track::before { content: ""; position: absolute; inset: 0 -10px; }
+.map .track::before { content: ""; position: absolute; inset: 0 -14px; }
+.map .track:active { cursor: grabbing; }
+.map.scrubbing .track { width: 5px; right: 5px; box-shadow: 0 0 14px rgba(127, 230, 255, .5); }
 .map .mk { position: absolute; right: 0; transform: translateY(-50%); display: flex; align-items: center; gap: 8px; cursor: pointer;
   font: 500 11px/1 var(--mono); color: var(--ink-soft); background: none; border: 0; padding: 0; }
 .map .mk span { background: rgba(3, 10, 18, .6); padding: 3px 6px; border-radius: 3px; }
@@ -216,7 +234,11 @@ body {
 .map .mk.sealvl { color: #fff; font-weight: 500; }
 .map .dot { position: absolute; right: 5px; width: 5px; height: 1px; background: rgba(255,255,255,.18); pointer-events: none; transition: background .5s, width .5s; }
 .map .dot.on { background: var(--readout); width: 11px; box-shadow: 0 0 6px var(--readout); }
-.map .you { position: absolute; right: -2px; width: 19px; height: 3px; background: var(--signal); transform: translateY(-50%); box-shadow: 0 0 8px var(--signal); pointer-events: none; }
+.map .you { position: absolute; right: -3px; width: 21px; height: 5px; border-radius: 3px; background: var(--signal);
+  transform: translateY(-50%); box-shadow: 0 0 10px var(--signal), 0 1px 4px rgba(0,0,0,.6); pointer-events: none; transition: width .2s, height .2s; }
+.map .you::after { content: ""; position: absolute; right: 100%; top: 50%; width: 9px; height: 1px; margin-right: 3px;
+  background: linear-gradient(270deg, var(--signal), transparent); }
+.map.scrubbing .you { width: 30px; height: 7px; }
 
 /* ---------- field log (game layer) ---------- */
 .log { display: grid; gap: 7px; border-top: 1px solid var(--line); padding-top: 11px; }
@@ -276,10 +298,98 @@ dialog.logd .inner { padding-top: 28px; }
 .tile .star { position: absolute; top: 5px; right: 6px; color: var(--signal); font-size: 13px; text-shadow: 0 0 8px var(--signal); }
 .tile:hover { outline: 1px solid var(--readout); }
 .logd .hint { font: 400 12px/1.4 var(--mono); color: var(--ink-faint); margin: 0; max-width: 46ch; }
+.logd .ghostrow { display: flex; align-items: center; gap: 8px; font: 500 12px/1 var(--mono); color: var(--ink-soft); cursor: pointer; }
+.hud dd.rate.over { color: var(--deadly); }
 .logd .reset { font: 500 12px/1 var(--mono); background: none; color: var(--ink-faint); border: 1px solid var(--line); border-radius: 3px; padding: 9px 12px; cursor: pointer; }
 .logd .reset:hover { color: var(--deadly); border-color: var(--deadly); }
 .sea-below .how { font: 500 12px/1.5 var(--mono); letter-spacing: .06em; color: #bfe6f2; margin: 22px auto 0; max-width: 46ch; }
 .sea-below .how b { color: var(--readout); font-weight: 500; }
+
+/* ---------- the traveller: a small figure riding the spine ---------- */
+.diver { position: fixed; z-index: 6; left: 50%; top: 50%; width: 88px; height: 110px; margin: -55px 0 0 -44px; pointer-events: none; }
+.diver svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .6)); }
+.diver .rig { animation: bob 3.6s ease-in-out infinite; transition: transform .25s ease; }
+.diver.tilt-down .rig { transform: rotate(9deg); }
+.diver.tilt-up .rig { transform: rotate(-9deg); }
+@keyframes bob { 0%, 100% { translate: 0 -4px; } 50% { translate: 0 5px; } }
+/* in the water the arms scull and the legs kick; out of it he just floats */
+.diver .arm, .diver .leg { transform-box: fill-box; }
+.diver .arm.l { transform-origin: 100% 50%; }
+.diver .arm.r { transform-origin: 0 50%; }
+.diver .leg { transform-origin: 50% 0; }
+.diver.swim .arm.l { animation: scullL 2s ease-in-out infinite; }
+.diver.swim .arm.r { animation: scullR 2s ease-in-out infinite; }
+.diver.swim .leg.l { animation: kickL 1.1s ease-in-out infinite; }
+.diver.swim .leg.r { animation: kickR 1.1s ease-in-out infinite; }
+.diver.swim .rig { animation: bob 2.4s ease-in-out infinite; }
+@keyframes scullL { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(24deg); } }
+@keyframes scullR { 0%, 100% { transform: rotate(20deg); } 50% { transform: rotate(-24deg); } }
+@keyframes kickL { 0%, 100% { transform: rotate(-11deg); } 50% { transform: rotate(11deg); } }
+@keyframes kickR { 0%, 100% { transform: rotate(11deg); } 50% { transform: rotate(-11deg); } }
+.diver.swap { animation: gpop .45s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes gpop { 0% { scale: .3; opacity: .2; } 60% { scale: 1.12; } 100% { scale: 1; } }
+.diver.clone { z-index: 70; margin: 0; }
+.diver.armed::after { content: "Drop to wear"; position: absolute; inset: -18px -14px; border: 1.5px dashed var(--signal); border-radius: 14px;
+  font: 500 10px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--signal); display: grid; place-items: end center; padding-bottom: 4px; }
+.diver.over::after { background: rgba(255, 138, 61, .16); }
+.ring { position: fixed; z-index: 69; border: 2.5px solid var(--signal); border-radius: 50%; pointer-events: none; }
+
+/* pressure alarm and the end of the line */
+.alarmring { position: fixed; inset: 0; z-index: 4; pointer-events: none; opacity: 0; transition: opacity .3s;
+  box-shadow: inset 0 0 130px 24px var(--deadly); }
+.alarmring.on { opacity: 1; animation: alarmpulse 1s steps(2) infinite; }
+@keyframes alarmpulse { 0%, 100% { opacity: .95; } 50% { opacity: .4; } }
+.alarmtxt { position: fixed; z-index: 7; left: 50%; top: calc(50% + 72px); transform: translateX(-50%); text-align: center; width: max-content;
+  max-width: min(360px, calc(100vw - 32px)); font: 800 22px/1.15 var(--display); letter-spacing: .12em; text-transform: uppercase; color: #fff;
+  background: rgba(22, 4, 8, .92); border: 1px solid var(--deadly); border-radius: 8px; padding: 10px 16px; }
+.alarmtxt small { display: block; margin-top: 5px; font: 500 11px/1.4 var(--mono); letter-spacing: .04em; color: #ffd6da; text-transform: none; }
+dialog.over { width: min(460px, calc(100% - 32px)); border: 1px solid var(--deadly); border-radius: 10px; background: #180409; color: var(--ink);
+  padding: 28px 26px 22px; text-align: center; }
+dialog.over::backdrop { background: rgba(50, 0, 8, .62); backdrop-filter: blur(4px); }
+dialog.over h2 { font: 900 46px/.9 var(--display); text-transform: uppercase; color: var(--deadly); margin: 0 0 12px; }
+dialog.over p { margin: 0 0 14px; font-size: 17px; }
+dialog.over .stat { font: 500 12px/1.6 var(--mono); color: var(--ink-soft); margin-bottom: 20px; }
+dialog.over button { font: 800 17px/1 var(--display); letter-spacing: .1em; text-transform: uppercase; background: var(--signal);
+  color: var(--signal-ink); border: 0; border-radius: 99px; padding: 13px 22px; cursor: pointer; }
+
+/* death effects: everything is drawn around the traveller's own position */
+.dfx { position: fixed; z-index: 8; width: 0; height: 0; pointer-events: none; }
+.dfx .b { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); }
+.dfx .bubble { border: 1.5px solid rgba(206, 240, 255, .85); border-radius: 50%; background: rgba(160, 220, 255, .12); }
+.dfx .shard { background: linear-gradient(140deg, #eaf7ff, #86c8e6); clip-path: polygon(50% 0, 100% 78%, 0 96%); }
+.dfx .bit { background: #b8c8d2; border-radius: 1px; }
+.dfx .ember { border-radius: 50%; background: radial-gradient(circle, #fff3c4, #ff8a3d 55%, rgba(255,80,0,0) 72%); }
+.dfx .puff { border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.85), rgba(255,255,255,0) 70%); }
+.dfx .flame { border-radius: 50% 50% 46% 46%; background: radial-gradient(circle at 50% 70%, #fff6cf, #ff9c2e 45%, rgba(255,60,0,0) 74%); }
+.dfx .shock { border: 3px solid rgba(233, 250, 255, .9); border-radius: 50%; }
+.dfx .bloom { border-radius: 50%; }
+
+/* ---------- the kit: three tiers, floating in the empty margin ---------- */
+.kit { position: fixed; z-index: 6; left: 16px; top: 50%; width: 142px; display: grid; gap: 7px; pointer-events: none; }
+.kit > * { pointer-events: auto; }
+.kit .klbl { justify-self: start; font: 500 10px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--ink-soft);
+  background: rgba(3, 10, 18, .6); border-radius: 4px; padding: 4px 7px; margin: 0 0 1px; }
+.gear { display: grid; grid-template-columns: 38px 1fr; align-items: center; gap: 9px; text-align: left; cursor: grab; touch-action: none;
+  color: var(--ink); background: rgba(4, 12, 22, .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border: 0; border-radius: 10px; padding: 8px 10px 8px 8px; box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow .3s, background .3s; }
+.gear:hover { box-shadow: inset 0 0 0 1px var(--readout); }
+.gear svg { width: 38px; height: 42px; }
+.gear .gt { display: grid; gap: 3px; min-width: 0; }
+.gear .gn { font: 800 14px/1.02 var(--display); letter-spacing: .02em; }
+.gear .gr { font: 500 10px/1 var(--mono); color: var(--readout); font-variant-numeric: tabular-nums; }
+.gear.now { box-shadow: inset 0 0 0 1.5px var(--signal), 0 0 26px -10px var(--signal); background: rgba(42, 17, 4, .74); }
+.gear.now .gr { color: var(--signal); }
+.gear.next:not([disabled]) { box-shadow: inset 0 0 0 1px var(--readout); }
+.gear.next:not([disabled]) .gn::after { content: " ↰"; color: var(--readout); }
+.gear[disabled] { cursor: not-allowed; opacity: .45; filter: grayscale(1); }
+.gear[disabled] .gr { color: var(--ink-faint); }
+.gear.dragging { opacity: .35; }
+.ghost { position: fixed; z-index: 80; width: 112px; margin: -48px 0 0 -48px; pointer-events: none; display: grid; justify-items: center; gap: 2px;
+  background: rgba(4, 12, 22, .92); border-radius: 10px; padding: 8px 6px; box-shadow: inset 0 0 0 1.5px var(--signal), 0 16px 40px -14px #000; }
+.ghost svg { width: 42px; height: 46px; }
+.ghost span { font: 800 12px/1 var(--display); color: var(--ink); }
+.toast.gearup { box-shadow: inset 0 0 0 1px rgba(255, 138, 61, .5), 0 12px 32px -12px rgba(0,0,0,.7); }
+.toast.gearup .d { background: var(--signal); box-shadow: 0 0 10px var(--signal); }
 
 /* ---------- details dialog ---------- */
 dialog.det { width: min(760px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: 0; border: 1px solid var(--line); border-radius: 8px;
@@ -309,7 +419,8 @@ dialog.det::backdrop { background: rgba(1, 5, 10, .72); backdrop-filter: blur(3p
 
 /* ---------- narrow screens ---------- */
 @media (max-width: 1319px) {
-  .map { display: none; }
+  .map { width: 26px; right: 4px; top: 16vh; height: 68vh; }
+  .map .mk { display: none; }
   .hud { left: 0; right: 0; top: 0; width: auto; border-radius: 0; border-width: 0 0 1px; padding: 10px 16px calc(10px);
     padding-top: calc(10px + env(safe-area-inset-top, 0px)); grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 16px; }
   .hud .readout { grid-row: span 2; }
@@ -323,10 +434,19 @@ dialog.det::backdrop { background: rgba(1, 5, 10, .72); backdrop-filter: blur(3p
   .hud select { flex: 0 1 190px; }
 }
 @media (max-width: 819px) {
-  :root { --card-w: auto; --gutter: 24px; }
+  :root { --card-w: auto; --gutter: 54px; }
   .ruler { left: 20px; }
   .tick { display: none; }
-  .card.L, .card.R { left: 44px; right: 16px; text-align: left; --drift: 28px; }
+  .card.L, .card.R { left: 74px; right: 28px; text-align: left; --drift: 28px; }
+  .map .track::before { inset: 0 -9px; }  /* keep the rail's touch zone off the entries */
+  .diver { left: 20px; width: 62px; height: 78px; margin: -39px 0 0 -31px; }
+  .kit { left: 2px; top: auto !important; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); width: 56px; gap: 6px; }
+  .kit .klbl { display: none; }
+  .gear { grid-template-columns: 1fr; gap: 2px; justify-items: center; padding: 6px 4px; }
+  .gear svg { width: 32px; height: 34px; }
+  .gear .gt { justify-items: center; text-align: center; }
+  .gear .gn { display: none; }
+  .gear .gr { font-size: 9px; }
   .card.L .pin { left: auto; right: 100%; }
   .card.L .pin::before { transform-origin: left; background: linear-gradient(270deg, var(--c-pin, var(--readout)), transparent); }
   .card.L .pin i { right: auto; left: -5.5px; }
@@ -341,6 +461,7 @@ dialog.det::backdrop { background: rgba(1, 5, 10, .72); backdrop-filter: blur(3p
 }
 @media (prefers-reduced-motion: reduce) {
   .ph img, .ph, .bar i { transition: none; }
+  .diver .rig, .alarmring.on, .diver.swim .arm, .diver.swim .leg { animation: none; }
   .ph, .ph img { transform: none; }
   .wrap { transform: none; }
   .chip.dz3::before, .toast, .toast .medal { animation: none; }
@@ -349,7 +470,7 @@ dialog.det::backdrop { background: rgba(1, 5, 10, .72); backdrop-filter: blur(3p
 
 <canvas id="sky" aria-hidden="true"></canvas>
 
-<aside class="hud" aria-live="off" aria-label="Position gauge">
+<aside class="hud" id="hud" aria-live="off" aria-label="Position gauge">
   <div class="readout">
     <p class="lbl" id="hudLbl">Sea level</p>
     <p class="val" id="hudVal">0 m</p>
@@ -362,6 +483,8 @@ dialog.det::backdrop { background: rgba(1, 5, 10, .72); backdrop-filter: blur(3p
   <dl>
     <dt id="hudK1">Pressure</dt><dd id="hudV1">1.0 atm</dd>
     <dt id="hudK2">Journey</dt><dd id="hudV2">0%</dd>
+    <dt>Wearing</dt><dd id="dockWear">swim shorts</dd>
+    <dt>Rated</dt><dd class="rate" id="dockRate">to 5 m</dd>
   </dl>
   <div class="row">
     <label class="sr" for="jump" style="position:absolute;left:-9999px">Jump to a place</label>
@@ -380,10 +503,23 @@ dialog.det::backdrop { background: rgba(1, 5, 10, .72); backdrop-filter: blur(3p
 
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
-<nav class="map" aria-label="Journey map">
+<nav class="map" id="map" aria-label="Journey map">
   <div class="track" id="track"></div>
   <div class="you" id="you"></div>
 </nav>
+
+<div class="diver" id="diver" aria-hidden="true"></div>
+<div class="alarmring" id="alarmRing" aria-hidden="true"></div>
+<div class="alarmtxt" id="alarmTxt" hidden></div>
+
+<section class="kit" id="rack" aria-label="Your kit"></section>
+
+<dialog class="over" id="over" aria-labelledby="overTitle">
+  <h2 id="overTitle">Crushed</h2>
+  <p id="overText"></p>
+  <p class="stat" id="overStat"></p>
+  <button type="button" id="overBtn">Back to sea level</button>
+</dialog>
 
 <main id="world"></main>
 
@@ -425,6 +561,7 @@ dialog.det::backdrop { background: rgba(1, 5, 10, .72); backdrop-filter: blur(3p
     <div class="tiles" id="logDown"></div>
     <div class="foot">
       <p class="hint">Pause on anything you pass and it scans into your log. Unknown tiles take you to where they hide.</p>
+      <label class="ghostrow"><input type="checkbox" id="ghostBox"> Ghost mode — never die, just read</label>
       <button class="reset" id="logReset" type="button">Reset log</button>
     </div>
   </div>
@@ -609,7 +746,8 @@ for (const n of nodes) {
           <button class="go up" type="button" data-step="-1">↑ Fly up</button>
           <button class="go down" type="button" data-step="1">↓ Dive down</button>
         </div>
-        <p class="how">◉ Pause on anything you pass to scan it into your field log · <b>${ITEMS.length}</b> to find</p>
+        <p class="how">◉ Pause on anything you pass to scan it into your field log · <b>${ITEMS.length}</b> to find<br>
+          ▲ Drag a suit from your kit onto the traveller — go past its rating and you will not come back</p>
       </div>`;
   }
   n.el = el;
@@ -859,7 +997,7 @@ function zoneAt(dir, v) {
   for (const z of zonesSorted[dir]) if (v >= z.v) name = z.name;
   return name;
 }
-let lastHud = '';
+let lastHud = '', lastScroll = 0, tiltT, lastBeyond = null, atSurface = false;
 function updateHUD() {
   const centre = scrollY + innerHeight / 2;
   const p = posAtY(centre);
@@ -869,6 +1007,28 @@ function updateHUD() {
   $('you').style.top = (frac * 100) + '%';
   const col = ramp(p.dir === 'up' ? UP_STOPS : DOWN_STOPS, p.v);
   document.documentElement.style.setProperty('--bg', `rgb(${col.map(c => Math.round(c * 255)).join(',')})`);
+  // the traveller leans the way you are travelling
+  const dScroll = scrollY - lastScroll; lastScroll = scrollY;
+  if (Math.abs(dScroll) > 2) {
+    diver.classList.toggle('tilt-down', dScroll > 0);
+    diver.classList.toggle('tilt-up', dScroll < 0);
+    clearTimeout(tiltT); tiltT = setTimeout(() => diver.classList.remove('tilt-down', 'tilt-up'), 220);
+  }
+  // crossing sea level swaps which kit you are carrying
+  const wantDir = p.v < 1 ? 'down' : p.dir;
+  if (wantDir !== dirNow) { dirNow = wantDir; lastV = null; paintDiver(); renderRack(); }
+  // Touching the surface is getting out at the beach: the suits come off and you are back
+  // in trunks (or, heading up, a t-shirt). What you have earned stays earned.
+  if (p.v < 1) {
+    if (!atSurface) {
+      atSurface = true;
+      if (game.gear.down !== BASE.down || game.gear.up !== BASE.up) {
+        game.gear = { ...BASE }; saveGame(); paintDiver(); renderRack(); lastV = null;
+      }
+    }
+  } else atSurface = false;
+  const beyond = p.v > wearing().max && p.v > 5 && !game.ghost;
+  if (beyond !== lastBeyond) { lastBeyond = beyond; paintRate(); }
   if (key === lastHud) return;
   lastHud = key;
   $('hudLbl').textContent = p.v < 0.05 ? 'Sea level' : p.dir === 'up' ? (p.v >= 1e6 ? 'Distance from Earth' : 'Altitude') : (p.v > 11000 ? 'Below sea level' : 'Depth');
@@ -937,10 +1097,24 @@ function buildMap() {
     mapDots[it.id] = d;
     track.parentNode.appendChild(d);
   }
-  track.onclick = e => {
+  // The rail doubles as the page's scrollbar: press anywhere on it to go there, or drag the
+  // handle to scrub the whole journey. The browser's own bar is hidden.
+  let scrubbing = false;
+  const scrubTo = y => {
     const r = track.getBoundingClientRect();
-    scrollTo({ top: (e.clientY - r.top) / r.height * docH - innerHeight / 2, behavior: REDUCED ? 'auto' : 'smooth' });
+    const t = Math.min(1, Math.max(0, (y - r.top) / r.height));
+    scrollTo({ top: t * docH - innerHeight / 2, behavior: 'auto' });
   };
+  track.onpointerdown = e => {
+    scrubbing = true; bootAt = null;
+    track.setPointerCapture(e.pointerId);
+    $('map').classList.add('scrubbing');
+    scrubTo(e.clientY);
+    e.preventDefault();
+  };
+  track.onpointermove = e => { if (scrubbing) scrubTo(e.clientY); };
+  const endScrub = () => { scrubbing = false; $('map').classList.remove('scrubbing'); };
+  track.onpointerup = endScrub; track.onpointercancel = endScrub;
 }
 // Up / down buttons on the sea-level hero step to the nearest item in that direction.
 world.addEventListener('click', e => {
@@ -954,12 +1128,30 @@ world.addEventListener('click', e => {
   if (open) openDetails(open.dataset.open);
 });
 
+/* ================= dialogs ================= */
+// A modal freezes the journey behind it: no scrolling, no wheel, no touch drag.
+let lockedAt = 0;
+function openModal(d) {
+  if (!document.documentElement.classList.contains('modal')) {
+    lockedAt = scrollY;
+    document.documentElement.classList.add('modal');
+  }
+  if (!d.open) d.showModal();
+}
+function releaseModal() {
+  if (document.querySelector('dialog[open]')) return; // another one is still up
+  document.documentElement.classList.remove('modal');
+  if (Math.abs(scrollY - lockedAt) > 1) scrollTo(0, lockedAt); // Safari can forget the offset
+}
+document.querySelectorAll('dialog').forEach(d => d.addEventListener('close', releaseModal));
+
 /* ================= details dialog ================= */
 const det = $('det');
 const order = nodes.filter(n => n.type === 'item').map(n => n.it.id); // top of page → bottom
 let current = null;
 function openDetails(id) {
   const it = byId[id]; if (!it) return;
+  const wasOpen = det.open;
   current = id;
   study(id);
   const c = credit(id), f = fmt(it.dir, it.v);
@@ -982,9 +1174,13 @@ function openDetails(id) {
   $('dPrev').hidden = !prev; $('dNext').hidden = !next;
   if (prev) { $('dPrev').textContent = '▲ ' + prev.name; $('dPrev').dataset.id = prev.id; }
   if (next) { $('dNext').textContent = '▼ ' + next.name; $('dNext').dataset.id = next.id; }
-  if (!det.open) det.showModal();
-  det.scrollTop = 0;
   goTo(id, false); // keep the page behind in step, so closing lands on this item
+  if (wasOpen) { det.scrollTop = 0; return; }
+  requestAnimationFrame(() => {
+    const ph = document.querySelector('#' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + ' .ph');
+    const show = () => { if (current === id && !det.open) { openModal(det); det.scrollTop = 0; } };
+    Promise.race([leapTo(ph), new Promise(r => setTimeout(r, 1100))]).then(show);
+  });
 }
 $('dPrev').addEventListener('click', e => openDetails(e.currentTarget.dataset.id));
 $('dNext').addEventListener('click', e => openDetails(e.currentTarget.dataset.id));
@@ -1005,7 +1201,13 @@ const game = (() => {
   try { g = JSON.parse(localStorage.getItem(SAVE) || localStorage.getItem(OLD_SAVE)); } catch (e) { g = null; }
   g = g && typeof g === 'object' ? g : {};
   const clean = o => Object.fromEntries(Object.entries(o && typeof o === 'object' ? o : {}).filter(([k]) => byId[k]));
-  return { found: clean(g.found), studied: clean(g.studied), badges: g.badges && typeof g.badges === 'object' ? g.badges : {} };
+  const gear = g.gear && typeof g.gear === 'object' ? g.gear : {};
+  return {
+    found: clean(g.found), studied: clean(g.studied), badges: g.badges && typeof g.badges === 'object' ? g.badges : {},
+    gear: { up: gear.up || 'jacket', down: gear.down || 'trunks' },
+    unlocked: [...new Set(['trunks', 'clothes', ...(Array.isArray(g.unlocked) ? g.unlocked : [])])],
+    deaths: +g.deaths || 0, ghost: !!g.ghost,
+  };
 })();
 function saveGame() { try { localStorage.setItem(SAVE, JSON.stringify(game)); } catch (e) { /* private mode: keep playing unsaved */ } }
 const mapDots = {};
@@ -1029,6 +1231,9 @@ const BADGES = [
     .map(([kind, name, desc]) => ({ kind, ids: ITEMS.filter(i => i.kind === kind).map(i => i.id), name, desc }))
     .filter(b => b.ids.length >= 3)
     .map(b => ({ k: 'kind-' + b.kind, name: b.name, desc: `${b.desc} (${b.ids.length})`, test: () => b.ids.every(id => game.found[id]) })),
+  { k: 'gear-deep', name: 'Deep pilot', desc: 'Earn the full-ocean-depth sub', test: () => game.unlocked.includes('lf') },
+  { k: 'gear-space', name: 'Rocketeer', desc: 'Earn the rocket & spacesuit', test: () => game.unlocked.includes('rocket') },
+  { k: 'gear-all', name: 'Quartermaster', desc: 'Earn every suit and craft, up and down', test: () => GEAR.every(g => game.unlocked.includes(g.id)) },
   { k: 'half', name: 'Halfway there', desc: `Log ${Math.ceil(ITEMS.length / 2)} discoveries`, test: () => count(game.found) >= ITEMS.length / 2 },
   { k: 'all', name: 'Cartographer', desc: `Log all ${ITEMS.length} — sky, sea and stone`, test: () => count(game.found) >= ITEMS.length },
 ];
@@ -1125,12 +1330,13 @@ function tileHTML(it) {
 function openLog() {
   const found = ITEMS.filter(i => game.found[i.id]);
   const far = dir => { const l = found.filter(i => i.dir === dir); return l.length ? fmt(dir, Math.max(...l.map(i => i.v))).main : '—'; };
-  $('logStats').innerHTML = [['Logged', `${found.length}/${ITEMS.length}`], ['Studied', count(game.studied)], ['Highest', far('up')], ['Deepest', far('down')]]
+  $('logStats').innerHTML = [['Logged', `${found.length}/${ITEMS.length}`], ['Studied', count(game.studied)], ['Highest', far('up')], ['Deepest', far('down')],
+    ['Gear earned', `${game.unlocked.length}/${GEAR.length}`], ['Lives lost', game.deaths || 0]]
     .map(([k, v]) => `<div><small>${k}</small><b>${esc(v)}</b></div>`).join('');
   $('logBadges').innerHTML = BADGES.map(b => `<div class="bg${game.badges[b.k] ? ' on' : ''}"><i></i><p><strong>${esc(b.name)}</strong>${esc(b.desc)}</p></div>`).join('');
   const byV = dir => ITEMS.filter(i => i.dir === dir).sort((a, b) => a.v - b.v).map(tileHTML).join('');
   $('logUp').innerHTML = byV('up'); $('logDown').innerHTML = byV('down');
-  if (!logD.open) logD.showModal();
+  openModal(logD);
   logD.scrollTop = 0;
 }
 $('logBtn').addEventListener('click', openLog);
@@ -1144,8 +1350,420 @@ logD.addEventListener('click', e => {
 $('logReset').addEventListener('click', () => {
   if (!confirm('Wipe your field log and badges and start the expedition again?')) return;
   game.found = {}; game.studied = {}; game.badges = {};
-  saveGame(); ITEMS.forEach(i => paintCard(i.id)); paintMeter(); openLog(); queueFocus();
+  game.gear = { ...BASE }; game.unlocked = ['trunks', 'clothes']; game.deaths = 0;
+  saveGame(); ITEMS.forEach(i => paintCard(i.id)); paintMeter(); paintDiver(); renderRack(); openLog(); queueFocus();
 });
+
+/* ================= the traveller: gear, depth ratings, survival ================= */
+// Every rating below is the real limit of the real machine or suit.
+const SKIN = '#f0c49a', DARK = '#152532', STEEL = '#c3d0d9', GLASS = '#7fe6ff', HOT = '#ff8a3d';
+const gsvg = inner => `<svg viewBox="0 0 64 84" aria-hidden="true"><g class="rig">${inner}</g></svg>`;
+const ARMS = c => `<rect class="arm l" x="13" y="26" width="12" height="5" rx="2.5" fill="${c}"/><rect class="arm r" x="39" y="26" width="12" height="5" rx="2.5" fill="${c}"/>`;
+const LEGS = c => `<rect class="leg l" x="26" y="47" width="5.5" height="20" rx="2.7" fill="${c}"/><rect class="leg r" x="32.5" y="47" width="5.5" height="20" rx="2.7" fill="${c}"/>`;
+const ART = {
+  trunks: ARMS(SKIN) + LEGS(SKIN) + `<circle cx="32" cy="13" r="8" fill="${SKIN}"/><rect x="24" y="21" width="16" height="26" rx="7" fill="${SKIN}"/>
+    <rect x="24" y="38" width="16" height="10" rx="3" fill="${HOT}"/>`,
+  wetsuit: `<rect x="38" y="20" width="10" height="24" rx="5" fill="${STEEL}"/><path d="M38 26 q-5 2-6 8" stroke="${DARK}" stroke-width="2" fill="none"/>`
+    + ARMS(DARK) + LEGS(DARK) + `<circle cx="32" cy="13" r="8" fill="${DARK}"/><rect x="24" y="21" width="16" height="26" rx="7" fill="${DARK}"/>
+    <rect x="25" y="9" width="14" height="8" rx="3" fill="${GLASS}" opacity=".9"/><ellipse cx="28" cy="70" rx="7" ry="4" fill="${DARK}"/><ellipse cx="36" cy="70" rx="7" ry="4" fill="${DARK}"/>`,
+  trimix: `<rect x="37" y="18" width="9" height="26" rx="4.5" fill="${STEEL}"/><rect x="45" y="20" width="7" height="22" rx="3.5" fill="#8fa3b0"/>`
+    + ARMS(DARK) + LEGS(DARK) + `<circle cx="32" cy="13" r="8.5" fill="${DARK}"/><rect x="23" y="21" width="18" height="27" rx="7" fill="${DARK}"/>
+    <rect x="24" y="8" width="15" height="9" rx="3" fill="${GLASS}" opacity=".9"/><circle cx="15" cy="12" r="3.5" fill="${HOT}"/>
+    <path d="M18 12 h5" stroke="${STEEL}" stroke-width="2"/><ellipse cx="28" cy="70" rx="7.5" ry="4" fill="${DARK}"/><ellipse cx="36" cy="70" rx="7.5" ry="4" fill="${DARK}"/>`,
+  ads: `<rect x="10" y="26" width="12" height="7" rx="3.5" fill="#ffc247"/><rect x="42" y="26" width="12" height="7" rx="3.5" fill="#ffc247"/>
+    <circle cx="10" cy="34" r="4" fill="#8fa3b0"/><circle cx="54" cy="34" r="4" fill="#8fa3b0"/>
+    <rect x="24" y="48" width="7" height="18" rx="3.5" fill="#ffc247"/><rect x="33" y="48" width="7" height="18" rx="3.5" fill="#ffc247"/>
+    <rect x="19" y="20" width="26" height="32" rx="12" fill="#ffc247"/><circle cx="32" cy="14" r="12" fill="#ffc247"/>
+    <circle cx="32" cy="14" r="7.5" fill="#06121d"/><circle cx="32" cy="14" r="5.5" fill="${SKIN}"/>
+    <path d="M20 30 h24 M20 38 h24" stroke="#b07f14" stroke-width="1.5"/>`,
+  alvin: `<ellipse cx="32" cy="42" rx="24" ry="14" fill="#eef3f6"/><rect x="26" y="22" width="14" height="10" rx="4" fill="#dbe4ea"/>
+    <circle cx="19" cy="42" r="8" fill="#0b2a44"/><circle cx="19" cy="42" r="6" fill="${GLASS}" opacity=".85"/><circle cx="19" cy="42" r="3" fill="${SKIN}"/>
+    <rect x="50" y="36" width="9" height="12" rx="3" fill="#8fa3b0"/><circle cx="43" cy="30" r="3" fill="${HOT}"/>
+    <path d="M12 52 q8 6 18 5" stroke="#8fa3b0" stroke-width="3" fill="none"/>`,
+  lf: `<rect x="6" y="28" width="52" height="28" rx="14" fill="${STEEL}"/><rect x="24" y="18" width="16" height="12" rx="5" fill="#9fb0bb"/>
+    <circle cx="22" cy="42" r="10" fill="#6f8d99"/><circle cx="22" cy="42" r="6.5" fill="${GLASS}" opacity=".9"/><circle cx="22" cy="42" r="3.2" fill="${SKIN}"/>
+    <rect x="52" y="34" width="8" height="16" rx="3" fill="#8fa3b0"/><circle cx="44" cy="34" r="3" fill="${HOT}"/><circle cx="44" cy="50" r="3" fill="${HOT}"/>`,
+  drill: `<rect x="27" y="4" width="10" height="46" fill="#8a6a4a"/><rect x="24" y="14" width="16" height="5" rx="2" fill="#6d5238"/>
+    <rect x="24" y="30" width="16" height="5" rx="2" fill="#6d5238"/><path d="M24 50 h16 l-8 20 z" fill="${STEEL}"/>
+    <path d="M26 56 h12 M28 62 h8" stroke="#6f8d99" stroke-width="2"/><circle cx="20" cy="72" r="2.5" fill="${HOT}" opacity=".8"/><circle cx="44" cy="66" r="2" fill="${HOT}" opacity=".6"/>`,
+  clothes: ARMS(SKIN) + LEGS('#2f4360') + `<circle cx="32" cy="13" r="8" fill="${SKIN}"/>
+    <rect x="24" y="21" width="16" height="22" rx="5" fill="#5aa9cf"/>
+    <rect x="18" y="22" width="8" height="8" rx="3" fill="#5aa9cf"/><rect x="38" y="22" width="8" height="8" rx="3" fill="#5aa9cf"/>
+    <rect x="24" y="40" width="16" height="9" rx="3" fill="#2f4360"/>
+    <rect x="25" y="65" width="7" height="4" rx="1.5" fill="#1b2a38"/><rect x="32" y="65" width="7" height="4" rx="1.5" fill="#1b2a38"/>`,
+  jacket: ARMS('#d7452f') + LEGS('#243447') + `<circle cx="32" cy="13" r="8" fill="${SKIN}"/><rect x="24" y="21" width="16" height="26" rx="7" fill="#d7452f"/>
+    <path d="M24 8 a8 8 0 0 1 16 0 z" fill="#2f6f8f"/><rect x="26" y="64" width="6" height="5" rx="2" fill="#1b2a38"/><rect x="33" y="64" width="6" height="5" rx="2" fill="#1b2a38"/>`,
+  oxygen: `<rect x="40" y="22" width="8" height="20" rx="4" fill="#d9e3ea"/><path d="M40 28 q-4 2-5 6" stroke="#9fb0bb" stroke-width="2" fill="none"/>`
+    + ARMS('#e8552f') + LEGS('#e8552f') + `<circle cx="32" cy="13" r="8.5" fill="#f2f5f7"/><rect x="23" y="21" width="18" height="27" rx="8" fill="#e8552f"/>
+    <rect x="25" y="9" width="14" height="6" rx="3" fill="#1b2a38"/><rect x="27" y="15" width="10" height="6" rx="3" fill="#c3d0d9"/>
+    <path d="M14 18 l6 26" stroke="#8fa3b0" stroke-width="2.5"/><path d="M11 17 h8" stroke="#8fa3b0" stroke-width="3"/>`,
+  cabin: `<rect x="4" y="28" width="56" height="26" rx="13" fill="#eef3f6"/><path d="M30 32 l24 -16 4 6 -20 14 z" fill="#d3dde4"/>
+    <circle cx="16" cy="41" r="5.5" fill="#0b2a44"/><circle cx="16" cy="41" r="4" fill="${GLASS}" opacity=".85"/><circle cx="16" cy="41" r="2.2" fill="${SKIN}"/>
+    <circle cx="30" cy="41" r="3" fill="#0b2a44"/><circle cx="40" cy="41" r="3" fill="#0b2a44"/><rect x="52" y="24" width="7" height="8" rx="2" fill="#c3d0d9"/>
+    <path d="M8 54 q10 6 22 4" stroke="#c3d0d9" stroke-width="3" fill="none"/>`,
+  psuit: ARMS('#dde5ea') + LEGS('#dde5ea') + `<rect x="23" y="21" width="18" height="27" rx="8" fill="#dde5ea"/>
+    <circle cx="32" cy="13" r="11" fill="#eef3f6"/><path d="M23 13 a9 9 0 0 1 18 0 a9 9 0 0 1 -18 0" fill="#ffc247" opacity=".92"/>
+    <rect x="26" y="24" width="12" height="6" rx="2" fill="#8fa3b0"/><path d="M38 30 q6 4 4 10" stroke="#8fa3b0" stroke-width="2" fill="none"/>
+    <rect x="26" y="64" width="6" height="5" rx="2" fill="#8fa3b0"/><rect x="33" y="64" width="6" height="5" rx="2" fill="#8fa3b0"/>`,
+  capsule: `<path d="M8 20 a24 18 0 0 1 48 0" fill="#f2f5f7" opacity=".55"/><path d="M14 20 l8 18 M50 20 l-8 18" stroke="#9fb0bb" stroke-width="1.6"/>
+    <rect x="18" y="36" width="28" height="30" rx="10" fill="#dde5ea"/><circle cx="32" cy="48" r="8" fill="#0b2a44"/>
+    <circle cx="32" cy="48" r="6" fill="${GLASS}" opacity=".85"/><circle cx="32" cy="48" r="3.4" fill="${SKIN}"/>
+    <rect x="22" y="64" width="20" height="5" rx="2" fill="#8fa3b0"/>`,
+  rocket: `<path d="M32 2 q12 16 12 38 v10 h-24 v-10 q0-22 12-38z" fill="#f2f5f7"/><path d="M20 40 q-10 8-10 20 l10-8z" fill="#d7452f"/>
+    <path d="M44 40 q10 8 10 20 l-10-8z" fill="#d7452f"/><circle cx="32" cy="26" r="7" fill="#0b2a44"/><circle cx="32" cy="26" r="5" fill="${GLASS}" opacity=".85"/>
+    <circle cx="32" cy="26" r="2.8" fill="${SKIN}"/><path d="M24 50 h16 l-3 8 h-10z" fill="#9fb0bb"/>
+    <path d="M26 58 q6 16 6 22 q0-6 6-22z" fill="${HOT}"/><path d="M29 58 q3 10 3 14 q0-4 3-14z" fill="#ffe08a"/>`,
+  deepspace: `<path d="M18 20 h28 l8 30 h-44z" fill="#e6edf2"/><path d="M14 50 h36 l-4 8 h-28z" fill="#9fb0bb"/>
+    <circle cx="32" cy="32" r="7" fill="#0b2a44"/><circle cx="32" cy="32" r="5" fill="${GLASS}" opacity=".85"/><circle cx="32" cy="32" r="2.8" fill="${SKIN}"/>
+    <rect x="12" y="20" width="6" height="6" rx="2" fill="#8fa3b0"/><rect x="46" y="20" width="6" height="6" rx="2" fill="#8fa3b0"/>
+    <path d="M24 58 q8 12 8 18 q0-6 8-18z" fill="${HOT}" opacity=".9"/>`,
+  probe: `<circle cx="32" cy="26" r="18" fill="#eef3f6"/><circle cx="32" cy="26" r="12" fill="#dbe4ea"/><circle cx="32" cy="26" r="3" fill="#8fa3b0"/>
+    <rect x="26" y="44" width="12" height="12" rx="3" fill="#c3d0d9"/><path d="M32 56 l0 14 M32 62 l-16 10 M32 62 l16 10" stroke="#8fa3b0" stroke-width="2.5" fill="none"/>
+    <circle cx="16" cy="72" r="3" fill="#9fb0bb"/><circle cx="48" cy="72" r="3" fill="#9fb0bb"/><circle cx="32" cy="70" r="3" fill="${HOT}"/>`,
+  dream: `<g fill="none" stroke="${GLASS}" stroke-width="2" stroke-dasharray="4 3" opacity=".9">
+    <circle cx="32" cy="13" r="8"/><rect x="24" y="21" width="16" height="26" rx="7"/><rect x="13" y="26" width="12" height="5" rx="2.5"/>
+    <rect x="39" y="26" width="12" height="5" rx="2.5"/><rect x="26" y="47" width="5.5" height="20" rx="2.7"/><rect x="32.5" y="47" width="5.5" height="20" rx="2.7"/></g>
+    <circle cx="32" cy="40" r="26" fill="${GLASS}" opacity=".07"/>`,
+};
+const GEAR = [
+  { id: 'trunks', dir: 'down', art: 'trunks', name: 'Swim shorts', max: 5, note: 'Fine for a dip. Any deeper and your ears complain.', swims: 1 },
+  { id: 'wetsuit', dir: 'down', art: 'wetsuit', name: 'Wetsuit & scuba set', max: 40, note: 'The recreational diving limit: 40 m, five atmospheres.', swims: 1 },
+  { id: 'trimix', dir: 'down', art: 'trimix', name: 'Technical trimix rig', max: 332, note: 'Helium in the mix, and hours of decompression coming back.', swims: 1 },
+  { id: 'ads', dir: 'down', art: 'ads', name: 'Atmospheric dive suit', max: 700, note: 'A wearable submarine: inside, you stay at surface pressure.' },
+  { id: 'alvin', dir: 'down', art: 'alvin', name: 'Research submersible', max: 6500, note: 'Alvin class: a titanium sphere for three, with lights and arms.' },
+  { id: 'lf', dir: 'down', art: 'lf', name: 'Full-ocean-depth sub', max: 11000, note: 'A forged titanium sphere, rated for any point in the ocean.' },
+  { id: 'drill', dir: 'down', art: 'drill', name: 'Superdeep drill string', max: 12262, note: 'The Kola rig. Below this, no machine has ever gone.' },
+  { id: 'dreamdown', dir: 'down', art: 'dream', name: 'Thought experiment', max: Infinity, note: 'Nothing physical survives here. You continue as an idea.' },
+  { id: 'clothes', dir: 'up', art: 'clothes', name: 'T-shirt & trousers', max: 3000, note: 'What you walk around in. Fine to the top of a small mountain.' },
+  { id: 'jacket', dir: 'up', art: 'jacket', name: 'Warm jacket', max: 5000, note: 'Above 3 km it is cold all year. A jacket gets you to the big summits.' },
+  { id: 'oxygen', dir: 'up', art: 'oxygen', name: 'Oxygen mask & down suit', max: 9000, note: 'Bottled oxygen and an ice axe: the Everest kit.' },
+  { id: 'cabin', dir: 'up', art: 'cabin', name: 'Pressurised cabin', max: 13000, note: 'An airliner holds its own air while the outside falls away.' },
+  { id: 'psuit', dir: 'up', art: 'psuit', name: 'Full pressure suit', max: 30000, note: 'What SR-71 and U-2 crews wear above the Armstrong limit.' },
+  { id: 'capsule', dir: 'up', art: 'capsule', name: 'Balloon capsule', max: 41500, note: 'The Stratos gondola, hanging under a paper-thin balloon.' },
+  { id: 'rocket', dir: 'up', art: 'rocket', name: 'Rocket & spacesuit', max: 420000, note: 'Enough thrust for low Earth orbit, where the ISS flies.' },
+  { id: 'deepspace', dir: 'up', art: 'deepspace', name: 'Lunar spacecraft', max: 4.5e8, note: 'Apollo class: life support for a trip to the Moon and back.' },
+  { id: 'probe', dir: 'up', art: 'probe', name: 'Robotic probe', max: 3e13, note: 'No crew, no return. Voyager has flown this far and still calls home.' },
+  { id: 'dreamup', dir: 'up', art: 'dream', name: 'Thought experiment', max: Infinity, note: 'No craft can cross this gulf. You continue as an idea.' },
+];
+const gearById = {}; GEAR.forEach(g => gearById[g.id] = g);
+const BASE = { down: 'trunks', up: 'clothes' };
+const tierList = dir => GEAR.filter(g => g.dir === dir);
+const nextTier = g => tierList(g.dir)[tierList(g.dir).indexOf(g) + 1];
+const prevTier = g => tierList(g.dir)[tierList(g.dir).indexOf(g) - 1];
+// ratings read as plain distances: "700 m", never "−700 m"
+const rated = g => g.max === Infinity ? 'no limit' : fmt(g.dir, g.max).main.replace('−', '');
+const isUnlocked = id => game.unlocked.includes(id);
+let dirNow = 'down';
+function wearing() {
+  const g = gearById[game.gear[dirNow]];
+  return g && g.dir === dirNow && isUnlocked(g.id) ? g : gearById[BASE[dirNow]];
+}
+
+const diver = $('diver');
+function paintDiver() {
+  const w = wearing();
+  diver.innerHTML = gsvg(ART[w.art]);
+  diver.classList.toggle('swim', !!w.swims); // arms and legs only move in water
+}
+function popDiver() { diver.classList.remove('swap'); void diver.offsetWidth; diver.classList.add('swap'); }
+function setGear(id) {
+  const g = gearById[id]; if (!g) return;
+  if (!isUnlocked(id)) {
+    const p = prevTier(g);
+    toast(`<span class="d"></span><b>Locked</b><span class="n">${p ? 'reach ' + esc(rated(p)) + ' to earn it' : ''}</span>`, 'gearup');
+    return;
+  }
+  game.gear[g.dir] = id; saveGame();
+  if (g.dir === dirNow) { paintDiver(); popDiver(); }
+  renderRack(); clearAlarm(); lastHud = ''; updateHUD();
+  toast(`<span class="d"></span><b>${esc(g.name)}</b><span class="n">safe to ${esc(rated(g))}</span>`, 'gearup');
+}
+
+/* ---- the rack ---- */
+// You only ever see three: what you are wearing, what comes next, and the one after that.
+function renderRack() {
+  const list = tierList(dirNow), w = wearing();
+  const start = Math.max(0, Math.min(list.indexOf(w), list.length - 3));
+  $('rack').innerHTML = '<p class="klbl">Your kit</p>' + list.slice(start, start + 3).map(g => {
+    const un = isUnlocked(g.id), now = g.id === w.id, before = list[list.indexOf(g) - 1];
+    return `<button class="gear${now ? ' now' : un ? ' next' : ''}" type="button" data-gear="${g.id}" aria-pressed="${now}" ${un ? '' : 'disabled'}
+      title="${esc(un ? g.note : 'Locked — reach ' + rated(before || g) + ' to earn it')}">
+      ${gsvg(ART[g.art])}<span class="gt"><span class="gn">${esc(un ? g.name : 'Locked')}</span>
+      <span class="gr">${un ? (g.max === Infinity ? 'no limit' : 'to ' + esc(rated(g))) : 'earn at ' + esc(rated(before || g))}</span></span></button>`;
+  }).join('');
+  $('dockWear').textContent = w.name.toLowerCase();
+  paintRate();
+  placeKit();
+}
+// Keep the kit beside the traveller, but never let it run into the dive computer above it.
+function placeKit() {
+  const kit = $('rack');
+  if (innerWidth < 820) { kit.style.top = ''; return; }
+  const h = kit.offsetHeight, hud = $('hud').getBoundingClientRect().bottom;
+  kit.style.top = Math.round(Math.max(hud + 20, innerHeight / 2 - h / 2)) + 'px';
+}
+// the dive computer changes height as its readings change, so follow it
+if (window.ResizeObserver) new ResizeObserver(placeKit).observe($('hud'));
+// one place decides how the rating reads, so the rack and the gauge never disagree
+function paintRate() {
+  const w = wearing(), p = posAtY(scrollY + innerHeight / 2);
+  const beyond = p.v > w.max && p.v > 5 && !game.ghost;
+  lastBeyond = beyond;
+  $('dockRate').classList.toggle('over', beyond);
+  $('dockRate').textContent = w.max === Infinity ? 'no limit' : (beyond ? 'only to ' : 'to ') + rated(w);
+}
+$('rack').addEventListener('click', e => {
+  const b = e.target.closest('[data-gear]');
+  if (b && !dragMoved) setGear(b.dataset.gear);
+});
+$('ghostBox').addEventListener('change', e => {
+  game.ghost = e.target.checked; saveGame(); clearAlarm();
+  toast(`<span class="d"></span><b>Ghost mode ${game.ghost ? 'on' : 'off'}</b><span class="n">${game.ghost ? 'nothing can hurt you' : 'gear matters again'}</span>`, 'gearup');
+});
+
+/* ---- drag a suit onto the traveller ---- */
+let dragGear = null, dragEl = null, dragMoved = false;
+$('rack').addEventListener('pointerdown', e => {
+  const b = e.target.closest('[data-gear]');
+  if (!b || b.disabled || e.button > 0) return;
+  dragGear = b.dataset.gear; dragMoved = false;
+  b.setPointerCapture(e.pointerId);
+  const onMove = ev => {
+    if (!dragMoved && Math.hypot(ev.clientX - e.clientX, ev.clientY - e.clientY) < 8) return;
+    if (!dragMoved) {
+      dragMoved = true; b.classList.add('dragging'); diver.classList.add('armed');
+      dragEl = document.createElement('div');
+      dragEl.className = 'ghost';
+      dragEl.innerHTML = gsvg(ART[gearById[dragGear].art]) + `<span>${esc(gearById[dragGear].name)}</span>`;
+      document.body.appendChild(dragEl);
+    }
+    dragEl.style.left = ev.clientX + 'px'; dragEl.style.top = ev.clientY + 'px';
+    diver.classList.toggle('over', overDiver(ev.clientX, ev.clientY));
+  };
+  const onUp = ev => {
+    b.removeEventListener('pointermove', onMove); b.removeEventListener('pointerup', onUp); b.removeEventListener('pointercancel', onUp);
+    b.classList.remove('dragging'); diver.classList.remove('armed', 'over');
+    if (dragEl) { dragEl.remove(); dragEl = null; }
+    if (dragMoved && overDiver(ev.clientX, ev.clientY)) setGear(dragGear);
+    else if (dragMoved) toast('<span class="d"></span><b>Drop it on the traveller</b><span class="n">to put it on</span>', 'gearup');
+    setTimeout(() => { dragMoved = false; }, 0);
+  };
+  b.addEventListener('pointermove', onMove); b.addEventListener('pointerup', onUp); b.addEventListener('pointercancel', onUp);
+});
+function overDiver(x, y) {
+  const r = diver.getBoundingClientRect();
+  return x > r.left - 34 && x < r.right + 34 && y > r.top - 34 && y < r.bottom + 34;
+}
+
+/* ---- pressure, vacuum, and the end of the line ---- */
+const GRACE = 6000;
+let alarmSince = 0, dead = false, lastV = null;
+function clearAlarm() { alarmSince = 0; $('alarmRing').classList.remove('on'); $('alarmTxt').hidden = true; }
+function tick() {
+  if (dead || bootAt || det.open || logD.open || $('over').open) return; // bootAt: the reader hasn't moved yet
+  const p = posAtY(scrollY + innerHeight / 2);
+  const g = wearing();
+  // The next tier is earned by TRAVELLING through the edge of what you are wearing — the stretch
+  // between 0.85× and 3× its rating. We test the span swept since the last tick, so a fast scroll
+  // still counts, while standing in one place earns nothing: the ladder can't be clicked through.
+  const from = lastV === null ? p.v : lastV, lo = Math.min(from, p.v), hi = Math.max(from, p.v);
+  lastV = p.v;
+  const nx = nextTier(g);
+  if (nx && !isUnlocked(nx.id) && !game.ghost && hi >= g.max * 0.85 && lo <= g.max * 3) {
+    game.unlocked.push(nx.id); saveGame(); renderRack(); checkBadges();
+    toast(`<span class="d"></span><b>Earned: ${esc(nx.name)}</b><span class="n">at ${esc(fmt(p.dir, p.v).main)} · drag it onto the traveller</span>`, 'gearup');
+  }
+  if (p.v <= g.max * 1.02 || p.v <= 5 || game.ghost) { clearAlarm(); return; }
+  if (!alarmSince) alarmSince = performance.now();
+  const left = Math.ceil((GRACE - (performance.now() - alarmSince)) / 1000);
+  $('alarmRing').classList.add('on');
+  const t = $('alarmTxt'); t.hidden = false;
+  t.innerHTML = (p.dir === 'down' ? 'Hull stress · ' : 'Life support failing · ') + Math.max(0, left)
+    + `<small>${esc(g.name)} is rated to ${esc(rated(g))} — turn back or change gear</small>`;
+  if (left <= 0) die(p, g);
+}
+// One ending per place: the sea drowns, eats or implodes you; the sky suffocates,
+// boils, freezes or burns you. Each is drawn around the traveller, then the card shows.
+const SHARK = `<svg viewBox="0 0 260 120" width="260" height="120" aria-hidden="true">
+  <g fill="#04090f" opacity=".95">
+    <path d="M252 60 q-26-30-78-38 q-58-9-108 6 l-30-24 10 32 -12 26 34-8 q46 22 106 14 q54-7 78-8z"/>
+    <path d="M132 18 l10-18 16 22z"/><path d="M150 92 l6 20 -22-12z"/><path d="M92 86 l2 16 -16-12z"/>
+  </g>
+  <circle cx="212" cy="50" r="3.4" fill="#dff4ff"/>
+  <path d="M252 60 q-20 12-46 14" stroke="#dff4ff" stroke-width="2" fill="none" opacity=".55"/>
+  <path d="M244 62 l5 8 5-9 M232 66 l4 8 6-8 M220 68 l4 8 6-8" fill="#fff" opacity=".85"/>
+</svg>`;
+const rnd = (a, b) => a + Math.random() * (b - a);
+function deathFx(kind) {
+  diver.classList.remove('tilt-down', 'tilt-up');
+  if (REDUCED) { diver.style.visibility = 'hidden'; return Promise.resolve(); }
+  const r = diver.getBoundingClientRect();
+  const layer = document.createElement('div');
+  layer.className = 'dfx';
+  layer.style.left = (r.left + r.width / 2) + 'px';
+  layer.style.top = (r.top + r.height / 2) + 'px';
+  document.body.appendChild(layer);
+  const add = (cls, w, h, css) => {
+    const d = document.createElement('div');
+    d.className = 'b ' + cls; d.style.width = w + 'px'; d.style.height = h + 'px';
+    if (css) Object.assign(d.style, css);
+    layer.appendChild(d); return d;
+  };
+  const A = (el, frames, ms, delay = 0, easing = 'ease-out') => el.animate(frames, { duration: ms, delay, easing, fill: 'forwards' });
+  const D = (frames, ms, easing = 'ease-in') => diver.animate(frames, { duration: ms, easing, fill: 'forwards' });
+  const out = (el, dist, ang, ms, delay, spin = 0) => A(el, [
+    { transform: 'translate(-50%,-50%) rotate(0deg)', opacity: 1 },
+    { transform: `translate(-50%,-50%) translate(${Math.cos(ang) * dist}px, ${Math.sin(ang) * dist}px) rotate(${spin}deg)`, opacity: 0 }], ms, delay);
+  const bubbles = (n, delay0 = 0) => {
+    for (let i = 0; i < n; i++) {
+      const sz = rnd(5, 14), b = add('bubble', sz, sz, { left: rnd(-26, 26) + 'px', top: rnd(-10, 26) + 'px' });
+      A(b, [{ transform: 'translate(-50%,-50%) scale(.6)', opacity: 0 },
+        { transform: `translate(-50%,-50%) translate(${rnd(-14, 14)}px, -${rnd(90, 190)}px) scale(1)`, opacity: .9, offset: .5 },
+        { transform: `translate(-50%,-50%) translate(${rnd(-22, 22)}px, -${rnd(200, 300)}px) scale(1.1)`, opacity: 0 }], rnd(900, 1400), delay0 + i * 55, 'ease-out');
+    }
+  };
+  let ms = 1200;
+  if (kind === 'implode') {
+    D([{ transform: 'scale(1)' }, { transform: 'scaleX(.3) scaleY(1.3)', offset: .4 }, { transform: 'scale(.04)', opacity: .3 }], 420);
+    const flash = add('bloom', 220, 220, { background: 'radial-gradient(circle, rgba(255,255,255,.9), rgba(255,255,255,0) 68%)' });
+    A(flash, [{ transform: 'translate(-50%,-50%) scale(.2)', opacity: .9 }, { transform: 'translate(-50%,-50%) scale(1.7)', opacity: 0 }], 420, 280);
+    const shock = add('shock', 46, 46);
+    A(shock, [{ transform: 'translate(-50%,-50%) scale(.2)', opacity: 1 }, { transform: 'translate(-50%,-50%) scale(9)', opacity: 0 }], 760, 300);
+    for (let i = 0; i < 16; i++) out(add('bit', rnd(3, 7), rnd(3, 7)), rnd(110, 260), rnd(0, 6.283), rnd(500, 780), 320, rnd(-300, 300));
+    ms = 1150;
+  } else if (kind === 'drown') {
+    D([{ transform: 'rotate(0) translateY(0)', opacity: 1 }, { transform: 'rotate(38deg) translateY(110px)', opacity: 0 }], 1300);
+    bubbles(18);
+    ms = 1450;
+  } else if (kind === 'shark') {
+    const fromLeft = Math.random() < .5, sign = fromLeft ? -1 : 1;
+    const sh = add('', 260, 120, { transform: 'translate(-50%,-50%)' });
+    sh.innerHTML = SHARK;
+    sh.style.scale = fromLeft ? '-1 1' : '1 1'; // the silhouette faces the way it swims
+    A(sh, [{ transform: `translate(-50%,-50%) translateX(${sign * 520}px) rotate(${sign * 5}deg)` },
+      { transform: 'translate(-50%,-50%) translateX(0px) rotate(0deg)', offset: .46 },
+      { transform: `translate(-50%,-50%) translateX(${-sign * 560}px) rotate(${-sign * 5}deg)` }], 1000, 0, 'cubic-bezier(.45,.05,.4,1)');
+    D([{ opacity: 1 }, { opacity: 1, offset: .43 }, { opacity: 0, offset: .48 }, { opacity: 0 }], 1000, 'linear');
+    const blood = add('bloom', 190, 190, { background: 'radial-gradient(circle, rgba(255,40,64,.6), rgba(160,0,20,0) 70%)' });
+    A(blood, [{ transform: 'translate(-50%,-50%) scale(.3)', opacity: .95 }, { transform: 'translate(-50%,-50%) scale(2.4)', opacity: 0 }], 800, 440);
+    bubbles(8, 430);
+    ms = 1300;
+  } else if (kind === 'cooked' || kind === 'burn') {
+    D([{ filter: 'brightness(1) saturate(1)' }, { filter: 'brightness(2.6) saturate(4) sepia(.7) hue-rotate(-25deg)', offset: .35 },
+      { filter: 'brightness(.12) saturate(.2)', transform: 'scale(.9) translateY(10px)', opacity: .85 }], 1000, 'ease-in-out');
+    const heat = add('bloom', 200, 200, { background: 'radial-gradient(circle, rgba(255,170,60,.65), rgba(255,60,0,0) 70%)' });
+    A(heat, [{ transform: 'translate(-50%,-50%) scale(.3)', opacity: .9 }, { transform: 'translate(-50%,-50%) scale(2.2)', opacity: 0 }], 950);
+    for (let i = 0; i < (kind === 'burn' ? 12 : 10); i++) {
+      const sz = rnd(9, 22);
+      const el = add(kind === 'burn' ? 'flame' : 'ember', sz, sz * (kind === 'burn' ? 1.5 : 1), { left: rnd(-24, 24) + 'px', top: rnd(-6, 24) + 'px' });
+      A(el, [{ transform: 'translate(-50%,-50%) scale(.5)', opacity: 0 },
+        { transform: `translate(-50%,-50%) translate(${rnd(-18, 18)}px, -${rnd(60, 120)}px) scale(1)`, opacity: .95, offset: .45 },
+        { transform: `translate(-50%,-50%) translate(${rnd(-26, 26)}px, -${rnd(140, 240)}px) scale(.4)`, opacity: 0 }], rnd(700, 1100), i * 45);
+    }
+    ms = 1250;
+  } else if (kind === 'boil') {
+    D([{ transform: 'scale(1)' }, { transform: 'scale(1.45)', offset: .45 }, { transform: 'scale(.05)', opacity: 0 }], 780, 'ease-in');
+    for (let i = 0; i < 14; i++) {
+      const sz = rnd(18, 42), ang = rnd(0, 6.283), el = add('puff', sz, sz);
+      A(el, [{ transform: 'translate(-50%,-50%) scale(.3)', opacity: .85 },
+        { transform: `translate(-50%,-50%) translate(${Math.cos(ang) * rnd(60, 170)}px, ${Math.sin(ang) * rnd(60, 170)}px) scale(1.6)`, opacity: 0 }], rnd(600, 900), 260 + i * 30);
+    }
+    ms = 1150;
+  } else if (kind === 'freeze') {
+    D([{ filter: 'brightness(1) saturate(1)' }, { filter: 'brightness(1.7) saturate(.15) hue-rotate(170deg)', offset: .45 },
+      { filter: 'brightness(1.7) saturate(.15) hue-rotate(170deg)', opacity: 0 }], 620, 'ease-in');
+    const frost = add('shock', 60, 60, { borderColor: 'rgba(200,240,255,.9)' });
+    A(frost, [{ transform: 'translate(-50%,-50%) scale(.2)', opacity: 1 }, { transform: 'translate(-50%,-50%) scale(4)', opacity: 0 }], 700, 380);
+    for (let i = 0; i < 11; i++) out(add('shard', rnd(8, 18), rnd(14, 26)), rnd(90, 230), rnd(0, 6.283), rnd(600, 900), 420, rnd(-220, 220));
+    ms = 1250;
+  } else { // blackout
+    const dark = add('bloom', 900, 900, { background: 'radial-gradient(circle, rgba(0,0,0,.82), rgba(0,0,0,0) 68%)' });
+    A(dark, [{ transform: 'translate(-50%,-50%) scale(.4)', opacity: 0 }, { transform: 'translate(-50%,-50%) scale(1.4)', opacity: 1 }], 900, 100);
+    D([{ transform: 'rotate(0) translateY(0)', opacity: 1 }, { transform: 'rotate(18deg)', offset: .25 },
+      { transform: 'rotate(96deg) translateY(170px)', opacity: 0 }], 1200);
+    ms = 1300;
+  }
+  return new Promise(res => setTimeout(() => {
+    layer.remove(); diver.style.visibility = 'hidden'; diver.getAnimations().forEach(a => a.cancel()); res();
+  }, ms));
+}
+// The sea has residents. If a hunter is near when your luck runs out, it gets the credit;
+// anything else that can hurt you stays anonymous, because a stonefish does not chase people.
+const HUNTER = /shark|squid|orca|whale|eel|barracuda|piranha|crocodile|seal|dolphin|octopus|jelly/i;
+function predatorNear(v) {
+  let best = null, bd = 0.5;
+  for (const i of ITEMS) {
+    if (i.dir !== 'down' || i.danger < 2 || !/Creature/.test(i.kind) || !HUNTER.test(i.name)) continue;
+    const d = Math.abs(L(i.v) - L(v));
+    if (d < bd) { bd = d; best = i; }
+  }
+  return best;
+}
+function die(p, g) {
+  dead = true; clearAlarm(); lastV = null;
+  game.deaths = (game.deaths || 0) + 1;
+  game.gear = { ...BASE }; // you come back in nothing but the basics, whichever way you were going
+  saveGame();
+  const f = fmt(p.dir, p.v);
+  let kind, title, text, stat;
+  if (p.dir === 'down') {
+    const pred = p.v < 1200 ? predatorNear(p.v) : null;
+    if (p.v > 100000) { kind = 'cooked'; title = 'Cooked'; text = `The rock at ${f.main} is hot enough to glow and thick enough to crush. Nothing here is survivable for a moment.`; }
+    else if (p.v > 11000) { kind = 'implode'; title = 'Buried'; text = `Below the seafloor at ${f.main} there is only rock. The deepest drill ever sunk stopped not far from here.`; }
+    else if (p.v >= 1200) { kind = 'implode'; title = 'Imploded'; text = `At ${f.main} the sea squeezed until something gave. The collapse was over in about a millisecond.`; }
+    else if (pred) { kind = 'shark'; title = 'Eaten'; text = `${pred.name} was hunting at ${f.main}, and you were the slowest thing in the water.`; }
+    else if (p.v > 120) { kind = 'shark'; title = 'Eaten'; text = `Something large found you at ${f.main}. You never got a proper look at it.`; }
+    else { kind = 'drown'; title = 'Drowned'; text = `Your air ran out at ${f.main}. The surface is a long way up with empty lungs.`; }
+    stat = `Pressure ${fmtAtm(pressure('down', p.v))} · ${g.name} was rated to ${rated(g)}`;
+  } else {
+    if (p.v > 3e10) { kind = 'burn'; title = 'Burned'; text = `Out here the sunlight itself is a furnace. At ${f.main} from Earth, nothing soft stays soft.`; }
+    else if (p.v > 100000) { kind = 'freeze'; title = 'Vacuum'; text = `There is nothing to breathe at ${f.main}, nothing to press on your skin, and 270 degrees of cold below freezing.`; }
+    else if (p.v > 19000) { kind = 'boil'; title = 'Boiled'; text = `Above the Armstrong limit the pressure is so low that the water in your body boils at ${f.main}.`; }
+    else { kind = 'blackout'; title = 'Blacked out'; text = `At ${f.main} the air is too thin to keep you conscious, and it is about −55 °C.`; }
+    stat = `Air pressure ${fmtAtm(pressure('up', p.v))} · ${g.name} was rated to ${rated(g)}`;
+  }
+  $('overTitle').textContent = title; $('overText').textContent = text; $('overStat').textContent = stat;
+  renderRack();
+  deathFx(kind).then(() => openModal($('over')));
+}
+$('overBtn').addEventListener('click', () => $('over').close());
+$('over').addEventListener('close', () => {
+  dead = false; lastV = null;
+  diver.style.visibility = '';
+  goTo('sea-level', false);
+  paintDiver(); popDiver(); renderRack(); lastHud = ''; updateHUD();
+});
+
+/* ---- the leap: the traveller jumps from the spine onto the photo ---- */
+function leapTo(target) {
+  if (REDUCED || !target) return Promise.resolve();
+  const r = diver.getBoundingClientRect(), t = target.getBoundingClientRect();
+  if (!t.height || t.bottom < 0 || t.top > innerHeight) return Promise.resolve();
+  const clone = diver.cloneNode(true);
+  clone.classList.add('clone'); clone.id = '';
+  Object.assign(clone.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+  document.body.appendChild(clone);
+  diver.style.visibility = 'hidden';
+  const dx = (t.left + t.width / 2) - (r.left + r.width / 2);
+  const dy = (t.top + t.height / 2) - (r.top + r.height / 2);
+  const spin = dx >= 0 ? 380 : -380;
+  return clone.animate([
+    { transform: 'translate(0,0) rotate(0deg) scale(1)' },
+    { transform: `translate(${dx * .45}px, ${Math.min(dy, 0) - 110}px) rotate(${spin * .5}deg) scale(.78)`, offset: .5 },
+    { transform: `translate(${dx}px, ${dy}px) rotate(${spin}deg) scale(.38)` },
+  ], { duration: 620, easing: 'cubic-bezier(.36,.06,.3,1)' }).finished.then(() => {
+    const ring = document.createElement('div');
+    ring.className = 'ring';
+    Object.assign(ring.style, { left: (t.left + t.width / 2 - 8) + 'px', top: (t.top + t.height / 2 - 8) + 'px', width: '16px', height: '16px' });
+    document.body.appendChild(ring);
+    ring.animate([{ transform: 'scale(.3)', opacity: .9 }, { transform: 'scale(6)', opacity: 0 }], { duration: 480, easing: 'ease-out' })
+      .finished.then(() => ring.remove());
+    clone.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260 }).finished.then(() => {
+      clone.remove(); diver.style.visibility = ''; popDiver();
+    });
+    return new Promise(res => setTimeout(res, 180));
+  });
+}
 
 /* ================= boot ================= */
 let bootAt = null; // { id, y }: the entry opened from the URL, until the reader scrolls away
@@ -1171,10 +1789,22 @@ bootAt = { id: byId[start] ? start : 'sea-level' };
 // centred position until the reader takes over.
 ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => addEventListener(t, () => { bootAt = null; }, { once: true, passive: true }));
 addEventListener('load', () => { if (bootAt) goTo(bootAt.id, false); });
+// Every visit starts in the basics at sea level — but a link that opens deep (or high) hands
+// you the lightest kit you have earned that survives there, instead of drowning you on arrival.
+game.gear = { ...BASE };
+if (byId[start]) {
+  const it = byId[start], list = tierList(it.dir).filter(g => isUnlocked(g.id));
+  game.gear[it.dir] = (list.find(g => g.max >= it.v) || list[list.length - 1] || gearById[BASE[it.dir]]).id;
+  dirNow = it.v < 1 ? 'down' : it.dir;
+}
+paintDiver();
+renderRack();
+$('ghostBox').checked = !!game.ghost;
 updateHUD();
 queueFocus();
+setInterval(tick, 200);
 addEventListener('scroll', () => { updateHUD(); queueFocus(); }, { passive: true });
-let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relayoutKeepingPlace, 150); });
+let rt; addEventListener('resize', () => { clearTimeout(rt); placeKit(); rt = setTimeout(relayoutKeepingPlace, 150); });
 document.fonts && document.fonts.ready.then(relayoutKeepingPlace);
 requestAnimationFrame(frame);
 })();
