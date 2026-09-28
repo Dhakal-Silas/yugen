@@ -349,8 +349,16 @@ dialog.over::backdrop { background: rgba(50, 0, 8, .62); backdrop-filter: blur(4
 dialog.over h2 { font: 900 46px/.9 var(--display); text-transform: uppercase; color: var(--deadly); margin: 0 0 12px; }
 dialog.over p { margin: 0 0 14px; font-size: 17px; }
 dialog.over .stat { font: 500 12px/1.6 var(--mono); color: var(--ink-soft); margin-bottom: 20px; }
+.hearts { margin: 0 0 16px; font: 500 13px/1 var(--mono); letter-spacing: .28em; color: var(--deadly); }
+.hearts .out { color: rgba(255, 255, 255, .22); }
+.hud dd.hearts { margin: 0; text-align: right; letter-spacing: .2em; font-size: 11px; }
+.obtns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 dialog.over button { font: 800 17px/1 var(--display); letter-spacing: .1em; text-transform: uppercase; background: var(--signal);
   color: var(--signal-ink); border: 0; border-radius: 99px; padding: 13px 22px; cursor: pointer; }
+dialog.over #reviveBtn { background: var(--readout); color: #04212b; }
+dialog.over button i { font-style: normal; opacity: .6; font-variant-numeric: tabular-nums; }
+.alarmtxt.safe { border-color: var(--readout); background: rgba(4, 20, 30, .92); }
+.alarmtxt.safe small { color: #cdeffb; }
 
 /* death effects: everything is drawn around the traveller's own position */
 .dfx { position: fixed; z-index: 8; width: 0; height: 0; pointer-events: none; }
@@ -364,25 +372,30 @@ dialog.over button { font: 800 17px/1 var(--display); letter-spacing: .1em; text
 .dfx .shock { border: 3px solid rgba(233, 250, 255, .9); border-radius: 50%; }
 .dfx .bloom { border-radius: 50%; }
 
-/* ---------- the kit: three tiers, floating in the empty margin ---------- */
-.kit { position: fixed; z-index: 6; left: 16px; top: 50%; width: 142px; display: grid; gap: 7px; pointer-events: none; }
+/* ---------- the kit: a pop-up beside the traveller, only when it is wanted ---------- */
+.kit { position: fixed; z-index: 7; left: calc(50% + 54px); top: 50%; width: 168px; display: grid; gap: 6px;
+  pointer-events: none; opacity: 0; visibility: hidden; transform: translateY(-50%) translateX(-8px);
+  transition: opacity .2s ease, transform .2s ease, visibility .2s; }
+.kit.flip { left: auto; right: calc(50% + 54px); transform: translateY(-50%) translateX(8px); }
+.kit.on { opacity: 1; visibility: visible; transform: translateY(-50%) translateX(0); }
 .kit > * { pointer-events: auto; }
-.kit .klbl { justify-self: start; font: 500 10px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--ink-soft);
-  background: rgba(3, 10, 18, .6); border-radius: 4px; padding: 4px 7px; margin: 0 0 1px; }
-.gear { display: grid; grid-template-columns: 38px 1fr; align-items: center; gap: 9px; text-align: left; cursor: grab; touch-action: none;
-  color: var(--ink); background: rgba(4, 12, 22, .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  border: 0; border-radius: 10px; padding: 8px 10px 8px 8px; box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow .3s, background .3s; }
-.gear:hover { box-shadow: inset 0 0 0 1px var(--readout); }
-.gear svg { width: 38px; height: 42px; }
-.gear .gt { display: grid; gap: 3px; min-width: 0; }
-.gear .gn { font: 800 14px/1.02 var(--display); letter-spacing: .02em; }
-.gear .gr { font: 500 10px/1 var(--mono); color: var(--readout); font-variant-numeric: tabular-nums; }
-.gear.now { box-shadow: inset 0 0 0 1.5px var(--signal), 0 0 26px -10px var(--signal); background: rgba(42, 17, 4, .74); }
-.gear.now .gr { color: var(--signal); }
-.gear.next:not([disabled]) { box-shadow: inset 0 0 0 1px var(--readout); }
-.gear.next:not([disabled]) .gn::after { content: " ↰"; color: var(--readout); }
-.gear[disabled] { cursor: not-allowed; opacity: .45; filter: grayscale(1); }
-.gear[disabled] .gr { color: var(--ink-faint); }
+.kit .klbl { display: none; }
+.gear { display: grid; grid-template-columns: 30px 1fr; align-items: center; gap: 9px; text-align: left; cursor: grab; touch-action: none;
+  color: var(--ink); background: rgba(4, 12, 22, .88); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 0; border-radius: 9px; padding: 7px 10px 7px 7px; box-shadow: inset 0 0 0 1px var(--line), 0 10px 26px -14px #000;
+  transition: box-shadow .3s, background .3s; }
+.gear:hover { box-shadow: inset 0 0 0 1px var(--readout), 0 10px 26px -14px #000; }
+.gear svg { width: 30px; height: 33px; }
+.gear .gn { font: 800 13.5px/1.05 var(--display); letter-spacing: .015em; }
+.gear .gr { display: none; }                      /* the name is enough; the rating lives in the gauge */
+.gear.now { box-shadow: inset 0 0 0 1.5px var(--signal), 0 0 24px -10px var(--signal); background: rgba(42, 17, 4, .9); }
+.gear.next:not([disabled]) { box-shadow: inset 0 0 0 1px var(--readout), 0 10px 26px -14px #000; }
+.gear[disabled] { cursor: not-allowed; opacity: .58; filter: grayscale(1); }  /* still legible over bright sky */
+.gear[disabled] .gn::after { content: " 🔒"; font-size: 10px; }
+/* the traveller is the handle that opens it */
+.diver { pointer-events: auto; cursor: pointer; }
+.diver.hasnew::before { content: ""; position: absolute; top: -6px; right: -2px; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--signal); box-shadow: 0 0 10px var(--signal); animation: ping 1.4s ease-out infinite; }
 .gear.dragging { opacity: .35; }
 .ghost { position: fixed; z-index: 80; width: 112px; margin: -48px 0 0 -48px; pointer-events: none; display: grid; justify-items: center; gap: 2px;
   background: rgba(4, 12, 22, .92); border-radius: 10px; padding: 8px 6px; box-shadow: inset 0 0 0 1.5px var(--signal), 0 16px 40px -14px #000; }
@@ -440,13 +453,8 @@ dialog.det::backdrop { background: rgba(1, 5, 10, .72); backdrop-filter: blur(3p
   .card.L, .card.R { left: 74px; right: 28px; text-align: left; --drift: 28px; }
   .map .track::before { inset: 0 -9px; }  /* keep the rail's touch zone off the entries */
   .diver { left: 20px; width: 62px; height: 78px; margin: -39px 0 0 -31px; }
-  .kit { left: 2px; top: auto !important; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); width: 56px; gap: 6px; }
-  .kit .klbl { display: none; }
-  .gear { grid-template-columns: 1fr; gap: 2px; justify-items: center; padding: 6px 4px; }
-  .gear svg { width: 32px; height: 34px; }
-  .gear .gt { justify-items: center; text-align: center; }
-  .gear .gn { display: none; }
-  .gear .gr { font-size: 9px; }
+  .kit, .kit.flip { left: 62px; right: auto; top: 50%; width: 156px; transform: translateY(-50%) translateX(-8px); }
+  .kit.on { transform: translateY(-50%) translateX(0); }
   .card.L .pin { left: auto; right: 100%; }
   .card.L .pin::before { transform-origin: left; background: linear-gradient(270deg, var(--c-pin, var(--readout)), transparent); }
   .card.L .pin i { right: auto; left: -5.5px; }
@@ -485,6 +493,7 @@ dialog.det::backdrop { background: rgba(1, 5, 10, .72); backdrop-filter: blur(3p
     <dt id="hudK2">Journey</dt><dd id="hudV2">0%</dd>
     <dt>Wearing</dt><dd id="dockWear">swim shorts</dd>
     <dt>Rated</dt><dd class="rate" id="dockRate">to 5 m</dd>
+    <dt>Lives</dt><dd class="hearts" id="hudLives"></dd>
   </dl>
   <div class="row">
     <label class="sr" for="jump" style="position:absolute;left:-9999px">Jump to a place</label>
@@ -518,7 +527,11 @@ dialog.det::backdrop { background: rgba(1, 5, 10, .72); backdrop-filter: blur(3p
   <h2 id="overTitle">Crushed</h2>
   <p id="overText"></p>
   <p class="stat" id="overStat"></p>
-  <button type="button" id="overBtn">Back to sea level</button>
+  <p class="hearts" id="overLives" aria-live="polite"></p>
+  <div class="obtns">
+    <button type="button" id="reviveBtn" hidden>Revive here</button>
+    <button type="button" id="overBtn">Back to sea level <i id="overCount">5</i></button>
+  </div>
 </dialog>
 
 <main id="world"></main>
@@ -747,7 +760,7 @@ for (const n of nodes) {
           <button class="go down" type="button" data-step="1">↓ Dive down</button>
         </div>
         <p class="how">◉ Pause on anything you pass to scan it into your field log · <b>${ITEMS.length}</b> to find<br>
-          ▲ Drag a suit from your kit onto the traveller — go past its rating and you will not come back</p>
+          ▲ Tap the traveller for your kit, then drag a suit onto them — go past its rating and you will not come back</p>
       </div>`;
   }
   n.el = el;
@@ -1016,14 +1029,20 @@ function updateHUD() {
   }
   // crossing sea level swaps which kit you are carrying
   const wantDir = p.v < 1 ? 'down' : p.dir;
-  if (wantDir !== dirNow) { dirNow = wantDir; lastV = null; paintDiver(); renderRack(); }
+  if (wantDir !== dirNow) { dirNow = wantDir; paintDiver(); renderRack(); }
   // Touching the surface is getting out at the beach: the suits come off and you are back
   // in trunks (or, heading up, a t-shirt). What you have earned stays earned.
   if (p.v < 1) {
     if (!atSurface) {
       atSurface = true;
-      if (game.gear.down !== BASE.down || game.gear.up !== BASE.up) {
-        game.gear = { ...BASE }; saveGame(); paintDiver(); renderRack(); lastV = null;
+      // The suits always come off here. Lives only come back once all three are gone —
+      // otherwise every death would refill them, since death brings you back to the surface.
+      const spent = game.lives <= 0;
+      if (spent || game.gear.down !== BASE.down || game.gear.up !== BASE.up) {
+        game.gear = { ...BASE };
+        if (spent) game.lives = LIVES;
+        saveGame(); paintDiver(); renderRack(); paintLives();
+        if (spent) toast('<span class="d"></span><b>A fresh expedition</b><span class="n">three lives again</span>', 'gearup');
       }
     }
   } else atSurface = false;
@@ -1179,7 +1198,7 @@ function openDetails(id) {
   requestAnimationFrame(() => {
     const ph = document.querySelector('#' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + ' .ph');
     const show = () => { if (current === id && !det.open) { openModal(det); det.scrollTop = 0; } };
-    Promise.race([leapTo(ph), new Promise(r => setTimeout(r, 1100))]).then(show);
+    Promise.race([leapTo(ph, it), new Promise(r => setTimeout(r, 1600))]).then(show);
   });
 }
 $('dPrev').addEventListener('click', e => openDetails(e.currentTarget.dataset.id));
@@ -1195,7 +1214,7 @@ det.addEventListener('close', () => { if (current) { const b = document.querySel
 /* ================= field log: scan, collect, earn badges ================= */
 // An entry is scanned when it rests near the middle of the screen for SCAN_MS —
 // long enough that skimming past doesn't count, short enough that reading always does.
-const SAVE = 'yugen-fieldlog-v1', OLD_SAVE = 'slz-fieldlog-v1', SCAN_MS = 650;
+const SAVE = 'yugen-fieldlog-v1', OLD_SAVE = 'slz-fieldlog-v1', SCAN_MS = 650, LIVES = 3;
 const game = (() => {
   let g = null;
   try { g = JSON.parse(localStorage.getItem(SAVE) || localStorage.getItem(OLD_SAVE)); } catch (e) { g = null; }
@@ -1206,6 +1225,8 @@ const game = (() => {
     found: clean(g.found), studied: clean(g.studied), badges: g.badges && typeof g.badges === 'object' ? g.badges : {},
     gear: { up: gear.up || 'jacket', down: gear.down || 'trunks' },
     unlocked: [...new Set(['trunks', 'clothes', ...(Array.isArray(g.unlocked) ? g.unlocked : [])])],
+    reach: { up: +(g.reach || {}).up || 0, down: +(g.reach || {}).down || 0 },
+    lives: Number.isFinite(g.lives) ? Math.max(0, Math.min(LIVES, g.lives)) : LIVES,
     deaths: +g.deaths || 0, ghost: !!g.ghost,
   };
 })();
@@ -1331,7 +1352,8 @@ function openLog() {
   const found = ITEMS.filter(i => game.found[i.id]);
   const far = dir => { const l = found.filter(i => i.dir === dir); return l.length ? fmt(dir, Math.max(...l.map(i => i.v))).main : '—'; };
   $('logStats').innerHTML = [['Logged', `${found.length}/${ITEMS.length}`], ['Studied', count(game.studied)], ['Highest', far('up')], ['Deepest', far('down')],
-    ['Gear earned', `${game.unlocked.length}/${GEAR.length}`], ['Lives lost', game.deaths || 0]]
+    ['Gear earned', `${game.unlocked.length}/${GEAR.length}`], ['Lives lost', game.deaths || 0],
+    ['Highest reached', game.reach.up ? fmt('up', game.reach.up).main : '—'], ['Deepest reached', game.reach.down ? fmt('down', game.reach.down).main : '—']]
     .map(([k, v]) => `<div><small>${k}</small><b>${esc(v)}</b></div>`).join('');
   $('logBadges').innerHTML = BADGES.map(b => `<div class="bg${game.badges[b.k] ? ' on' : ''}"><i></i><p><strong>${esc(b.name)}</strong>${esc(b.desc)}</p></div>`).join('');
   const byV = dir => ITEMS.filter(i => i.dir === dir).sort((a, b) => a.v - b.v).map(tileHTML).join('');
@@ -1351,6 +1373,7 @@ $('logReset').addEventListener('click', () => {
   if (!confirm('Wipe your field log and badges and start the expedition again?')) return;
   game.found = {}; game.studied = {}; game.badges = {};
   game.gear = { ...BASE }; game.unlocked = ['trunks', 'clothes']; game.deaths = 0;
+  game.reach = { up: 0, down: 0 }; game.lives = LIVES; paintLives();
   saveGame(); ITEMS.forEach(i => paintCard(i.id)); paintMeter(); paintDiver(); renderRack(); openLog(); queueFocus();
 });
 
@@ -1420,6 +1443,12 @@ const ART = {
   probe: `<circle cx="32" cy="26" r="18" fill="#eef3f6"/><circle cx="32" cy="26" r="12" fill="#dbe4ea"/><circle cx="32" cy="26" r="3" fill="#8fa3b0"/>
     <rect x="26" y="44" width="12" height="12" rx="3" fill="#c3d0d9"/><path d="M32 56 l0 14 M32 62 l-16 10 M32 62 l16 10" stroke="#8fa3b0" stroke-width="2.5" fill="none"/>
     <circle cx="16" cy="72" r="3" fill="#9fb0bb"/><circle cx="48" cy="72" r="3" fill="#9fb0bb"/><circle cx="32" cy="70" r="3" fill="${HOT}"/>`,
+  para: `<path d="M4 30 a30 24 0 0 1 56 0 z" fill="#e8eff4"/><path d="M4 30 a30 24 0 0 1 56 0" fill="none" stroke="#9fb0bb" stroke-width="1.4"/>
+    <path d="M22 13 v17 M42 13 v17" stroke="#9fb0bb" stroke-width="1.2"/>
+    <path d="M5 31 L27 52 M59 31 L37 52 M22 31 L30 52 M42 31 L34 52" stroke="#c3d0d9" stroke-width="1.1" fill="none"/>
+    <circle cx="32" cy="58" r="6" fill="${SKIN}"/><rect x="25" y="64" width="14" height="15" rx="5" fill="#5aa9cf"/>
+    <path d="M27 65 L27 52 M37 65 L37 52" stroke="${SKIN}" stroke-width="3.4" stroke-linecap="round"/>
+    <rect x="27" y="78" width="4.5" height="9" rx="2" fill="#2f4360"/><rect x="33" y="78" width="4.5" height="9" rx="2" fill="#2f4360"/>`,
   dream: `<g fill="none" stroke="${GLASS}" stroke-width="2" stroke-dasharray="4 3" opacity=".9">
     <circle cx="32" cy="13" r="8"/><rect x="24" y="21" width="16" height="26" rx="7"/><rect x="13" y="26" width="12" height="5" rx="2.5"/>
     <rect x="39" y="26" width="12" height="5" rx="2.5"/><rect x="26" y="47" width="5.5" height="20" rx="2.7"/><rect x="32.5" y="47" width="5.5" height="20" rx="2.7"/></g>
@@ -1474,6 +1503,7 @@ function setGear(id) {
     return;
   }
   game.gear[g.dir] = id; saveGame();
+  diver.classList.remove('hasnew');
   if (g.dir === dirNow) { paintDiver(); popDiver(); }
   renderRack(); clearAlarm(); lastHud = ''; updateHUD();
   toast(`<span class="d"></span><b>${esc(g.name)}</b><span class="n">safe to ${esc(rated(g))}</span>`, 'gearup');
@@ -1484,26 +1514,16 @@ function setGear(id) {
 function renderRack() {
   const list = tierList(dirNow), w = wearing();
   const start = Math.max(0, Math.min(list.indexOf(w), list.length - 3));
-  $('rack').innerHTML = '<p class="klbl">Your kit</p>' + list.slice(start, start + 3).map(g => {
+  $('rack').innerHTML = list.slice(start, start + 3).map(g => {
     const un = isUnlocked(g.id), now = g.id === w.id, before = list[list.indexOf(g) - 1];
-    return `<button class="gear${now ? ' now' : un ? ' next' : ''}" type="button" data-gear="${g.id}" aria-pressed="${now}" ${un ? '' : 'disabled'}
-      title="${esc(un ? g.note : 'Locked — reach ' + rated(before || g) + ' to earn it')}">
-      ${gsvg(ART[g.art])}<span class="gt"><span class="gn">${esc(un ? g.name : 'Locked')}</span>
-      <span class="gr">${un ? (g.max === Infinity ? 'no limit' : 'to ' + esc(rated(g))) : 'earn at ' + esc(rated(before || g))}</span></span></button>`;
+    const label = un ? `${g.name} — safe to ${rated(g)}. ${g.note}` : `${g.name} — locked until you reach ${rated(before || g)}`;
+    return `<button class="gear${now ? ' now' : un ? ' next' : ''}" type="button" data-gear="${g.id}" aria-pressed="${now}"
+      ${un ? '' : 'disabled'} title="${esc(label)}" aria-label="${esc(label)}">
+      ${gsvg(ART[g.art])}<span class="gn">${esc(g.name)}</span></button>`;
   }).join('');
   $('dockWear').textContent = w.name.toLowerCase();
   paintRate();
-  placeKit();
 }
-// Keep the kit beside the traveller, but never let it run into the dive computer above it.
-function placeKit() {
-  const kit = $('rack');
-  if (innerWidth < 820) { kit.style.top = ''; return; }
-  const h = kit.offsetHeight, hud = $('hud').getBoundingClientRect().bottom;
-  kit.style.top = Math.round(Math.max(hud + 20, innerHeight / 2 - h / 2)) + 'px';
-}
-// the dive computer changes height as its readings change, so follow it
-if (window.ResizeObserver) new ResizeObserver(placeKit).observe($('hud'));
 // one place decides how the rating reads, so the rack and the gauge never disagree
 function paintRate() {
   const w = wearing(), p = posAtY(scrollY + innerHeight / 2);
@@ -1514,8 +1534,39 @@ function paintRate() {
 }
 $('rack').addEventListener('click', e => {
   const b = e.target.closest('[data-gear]');
-  if (b && !dragMoved) setGear(b.dataset.gear);
+  if (b && !dragMoved) { setGear(b.dataset.gear); showKit(2200); }
 });
+
+/* ---- the kit only appears when it is wanted: tap the traveller, earn something, or run out of rating ---- */
+let kitHold = 0, kitPinned = false;
+function kitSide() {
+  // Pop out on the side away from the entry you are reading, so it never covers the text.
+  const vc = scrollY + innerHeight / 2;
+  let near = null, best = Infinity;
+  for (const n of visible) { const d = Math.abs(n.y - 20 + n.h / 2 - vc); if (d < best) { best = d; near = n; } }
+  $('rack').classList.toggle('flip', !!near && near.el.classList.contains('R'));
+}
+function showKit(ms) {
+  kitSide();
+  $('rack').classList.add('on');
+  clearTimeout(kitHold);
+  if (ms) kitHold = setTimeout(hideKit, ms);
+}
+function hideKit() {
+  if (kitPinned || alarmSince || dragMoved) return;   // never vanish mid-emergency or mid-drag
+  $('rack').classList.remove('on');
+}
+diver.addEventListener('click', () => {
+  diver.classList.remove('hasnew');
+  const open = $('rack').classList.contains('on');
+  if (!open) { kitPinned = true; showKit(0); return; }
+  if (alarmSince) return;               // never tap away the kit while something is killing you
+  kitPinned = false; $('rack').classList.remove('on');
+});
+diver.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse' && !kitPinned) showKit(0); });
+diver.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse' && !kitPinned) kitHold = setTimeout(hideKit, 600); });
+$('rack').addEventListener('pointerenter', () => clearTimeout(kitHold));
+$('rack').addEventListener('pointerleave', () => { if (!kitPinned) kitHold = setTimeout(hideKit, 600); });
 $('ghostBox').addEventListener('change', e => {
   game.ghost = e.target.checked; saveGame(); clearAlarm();
   toast(`<span class="d"></span><b>Ghost mode ${game.ghost ? 'on' : 'off'}</b><span class="n">${game.ghost ? 'nothing can hurt you' : 'gear matters again'}</span>`, 'gearup');
@@ -1527,7 +1578,7 @@ $('rack').addEventListener('pointerdown', e => {
   const b = e.target.closest('[data-gear]');
   if (!b || b.disabled || e.button > 0) return;
   dragGear = b.dataset.gear; dragMoved = false;
-  b.setPointerCapture(e.pointerId);
+  try { b.setPointerCapture(e.pointerId); } catch (err) { /* no capture: the move listeners still work */ }
   const onMove = ev => {
     if (!dragMoved && Math.hypot(ev.clientX - e.clientX, ev.clientY - e.clientY) < 8) return;
     if (!dragMoved) {
@@ -1556,25 +1607,47 @@ function overDiver(x, y) {
 }
 
 /* ---- pressure, vacuum, and the end of the line ---- */
-const GRACE = 6000;
-let alarmSince = 0, dead = false, lastV = null;
-function clearAlarm() { alarmSince = 0; $('alarmRing').classList.remove('on'); $('alarmTxt').hidden = true; }
+const GRACE = 6000, SHIELD = 8000;
+let alarmSince = 0, dead = false, shieldUntil = 0, saveDue = 0;
+function clearAlarm() {
+  const was = alarmSince;
+  alarmSince = 0;
+  $('alarmRing').classList.remove('on'); $('alarmTxt').hidden = true; $('alarmTxt').classList.remove('safe');
+  if (was && !kitPinned) { clearTimeout(kitHold); kitHold = setTimeout(hideKit, 1200); }
+}
+// Everything the predecessor tier covers is already behind you, so hand it over.
+function syncUnlocks(dir) {
+  const list = tierList(dir);
+  let won = null;
+  for (let i = 1; i < list.length; i++) {
+    if (isUnlocked(list[i].id) || !isUnlocked(list[i - 1].id)) continue;
+    if (game.reach[dir] >= list[i - 1].max * 0.85) { game.unlocked.push(list[i].id); won = list[i]; }
+  }
+  if (won) {
+    saveGame(); renderRack(); checkBadges();
+    toast(`<span class="d"></span><b>Earned: ${esc(won.name)}</b><span class="n">drag it onto the traveller</span>`, 'gearup');
+    showKit(6000); diver.classList.add('hasnew');
+  } else if (performance.now() > saveDue) { saveDue = performance.now() + 4000; saveGame(); }
+}
+// After a revive you get a few seconds where nothing can touch you — long enough to get out.
+function showShield() {
+  $('alarmRing').classList.remove('on');
+  const t = $('alarmTxt');
+  t.hidden = false; t.classList.add('safe');
+  t.innerHTML = 'Emergency reserve · ' + Math.ceil((shieldUntil - performance.now()) / 1000)
+    + '<small>Nothing can hurt you yet — change gear or head back</small>';
+}
 function tick() {
   if (dead || bootAt || det.open || logD.open || $('over').open) return; // bootAt: the reader hasn't moved yet
   const p = posAtY(scrollY + innerHeight / 2);
   const g = wearing();
-  // The next tier is earned by TRAVELLING through the edge of what you are wearing — the stretch
-  // between 0.85× and 3× its rating. We test the span swept since the last tick, so a fast scroll
-  // still counts, while standing in one place earns nothing: the ladder can't be clicked through.
-  const from = lastV === null ? p.v : lastV, lo = Math.min(from, p.v), hi = Math.max(from, p.v);
-  lastV = p.v;
-  const nx = nextTier(g);
-  if (nx && !isUnlocked(nx.id) && !game.ghost && hi >= g.max * 0.85 && lo <= g.max * 3) {
-    game.unlocked.push(nx.id); saveGame(); renderRack(); checkBadges();
-    toast(`<span class="d"></span><b>Earned: ${esc(nx.name)}</b><span class="n">at ${esc(fmt(p.dir, p.v).main)} · drag it onto the traveller</span>`, 'gearup');
-  }
+  // Gear is earned by how far you have actually been. Reaching a place unlocks every tier whose
+  // predecessor covers ground you have already crossed, so the ladder is always one step ahead
+  // of you: you can never end up somewhere with nothing left to put on.
+  if (!game.ghost && p.v > game.reach[p.dir]) { game.reach[p.dir] = p.v; syncUnlocks(p.dir); }
+  if (performance.now() < shieldUntil) { showShield(); return; }
   if (p.v <= g.max * 1.02 || p.v <= 5 || game.ghost) { clearAlarm(); return; }
-  if (!alarmSince) alarmSince = performance.now();
+  if (!alarmSince) { alarmSince = performance.now(); showKit(0); }  // you need the kit now, so here it is
   const left = Math.ceil((GRACE - (performance.now() - alarmSince)) / 1000);
   $('alarmRing').classList.add('on');
   const t = $('alarmTxt'); t.hidden = false;
@@ -1699,11 +1772,17 @@ function predatorNear(v) {
   }
   return best;
 }
+function hearts(n) {
+  return Array.from({ length: LIVES }, (_, i) => i < n ? '<span>♥</span>' : '<span class="out">♥</span>').join('');
+}
+function paintLives() { $('hudLives').innerHTML = hearts(game.lives); }
 function die(p, g) {
-  dead = true; clearAlarm(); lastV = null;
+  dead = true; clearAlarm(); shieldUntil = 0;
   game.deaths = (game.deaths || 0) + 1;
+  game.lives = Math.max(0, game.lives - 1);
   game.gear = { ...BASE }; // you come back in nothing but the basics, whichever way you were going
-  saveGame();
+  saveGame(); paintLives();
+  diedAt = p;
   const f = fmt(p.dir, p.v);
   let kind, title, text, stat;
   if (p.dir === 'down') {
@@ -1723,35 +1802,90 @@ function die(p, g) {
     stat = `Air pressure ${fmtAtm(pressure('up', p.v))} · ${g.name} was rated to ${rated(g)}`;
   }
   $('overTitle').textContent = title; $('overText').textContent = text; $('overStat').textContent = stat;
+  $('overLives').innerHTML = game.lives > 0
+    ? hearts(game.lives) + ' <span style="letter-spacing:0;color:var(--ink-soft)">' + game.lives + ' left</span>'
+    : hearts(0) + ' <span style="letter-spacing:0;color:var(--ink-soft)">no lives left — the surface restores them</span>';
+  $('reviveBtn').hidden = game.lives < 1;
   renderRack();
-  deathFx(kind).then(() => openModal($('over')));
+  deathFx(kind).then(() => { openModal($('over')); startReturnCount(); });
+}
+// The card does not wait for you: it sends you home in five seconds unless you revive.
+let returnTimer = 0, diedAt = null, reviving = false;
+function startReturnCount() {
+  let left = 5;
+  $('overCount').textContent = left;
+  clearInterval(returnTimer);
+  returnTimer = setInterval(() => {
+    left--;
+    $('overCount').textContent = Math.max(0, left);
+    if (left <= 0) { clearInterval(returnTimer); $('over').close(); }
+  }, 1000);
 }
 $('overBtn').addEventListener('click', () => $('over').close());
+$('reviveBtn').addEventListener('click', () => {
+  // Spend nothing extra: stand up where you fell, in the best kit you have earned, briefly untouchable.
+  reviving = true;
+  if (diedAt) {
+    const list = tierList(diedAt.dir).filter(x => isUnlocked(x.id));
+    const fit = list.find(x => x.max >= diedAt.v) || list[list.length - 1];
+    if (fit) game.gear[diedAt.dir] = fit.id;
+    saveGame();
+  }
+  shieldUntil = performance.now() + SHIELD;
+  $('over').close();
+});
 $('over').addEventListener('close', () => {
-  dead = false; lastV = null;
+  clearInterval(returnTimer);
+  dead = false;
   diver.style.visibility = '';
-  goTo('sea-level', false);
+  if (reviving) {
+    reviving = false;
+    toast(`<span class="d"></span><b>Revived</b><span class="n">${SHIELD / 1000} seconds of grace — move or change gear</span>`, 'gearup');
+  } else {
+    goTo('sea-level', false);
+  }
   paintDiver(); popDiver(); renderRack(); lastHud = ''; updateHUD();
 });
 
-/* ---- the leap: the traveller jumps from the spine onto the photo ---- */
-function leapTo(target) {
+/* ---- the leap: how the traveller crosses to the photo depends on what is around them ---- */
+function leapTo(target, it) {
   if (REDUCED || !target) return Promise.resolve();
   const r = diver.getBoundingClientRect(), t = target.getBoundingClientRect();
   if (!t.height || t.bottom < 0 || t.top > innerHeight) return Promise.resolve();
-  const clone = diver.cloneNode(true);
-  clone.classList.add('clone'); clone.id = '';
+  // In the air you step out and parachute across; in the sea you dive, tank and fins and all;
+  // inside rock there is nothing to swim or fall through, so you tumble.
+  const mode = !it ? 'tumble' : it.dir === 'up' ? 'para' : it.v <= 11000 ? 'dive' : 'tumble';
+  const clone = document.createElement('div');
+  clone.className = 'diver clone' + (mode === 'dive' ? ' swim' : '');
+  clone.innerHTML = mode === 'para' ? gsvg(ART.para) : mode === 'dive' ? gsvg(ART.wetsuit) : diver.innerHTML;
   Object.assign(clone.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
   document.body.appendChild(clone);
   diver.style.visibility = 'hidden';
   const dx = (t.left + t.width / 2) - (r.left + r.width / 2);
   const dy = (t.top + t.height / 2) - (r.top + r.height / 2);
   const spin = dx >= 0 ? 380 : -380;
-  return clone.animate([
+  const sway = dx >= 0 ? 1 : -1;
+  const frames = mode === 'para' ? [
+    // canopy snaps open, then a long swaying drift down onto the photo
+    { transform: 'translate(0,0) rotate(0deg) scale(.5)', offset: 0 },
+    { transform: `translate(${dx * .18}px, ${dy * .12 - 24}px) rotate(${sway * -7}deg) scale(1)`, offset: .22 },
+    { transform: `translate(${dx * .55}px, ${dy * .5}px) rotate(${sway * 8}deg) scale(.86)`, offset: .58 },
+    { transform: `translate(${dx * .85}px, ${dy * .8}px) rotate(${sway * -5}deg) scale(.64)`, offset: .82 },
+    { transform: `translate(${dx}px, ${dy}px) rotate(0deg) scale(.42)`, offset: 1 },
+  ] : mode === 'dive' ? [
+    // a crouch, then head-first through the water
+    { transform: 'translate(0,0) rotate(0deg) scale(1)', offset: 0 },
+    { transform: `translate(${dx * .12}px, ${-34}px) rotate(${sway * 24}deg) scale(1.02)`, offset: .2 },
+    { transform: `translate(${dx * .6}px, ${dy * .45}px) rotate(${sway * 128}deg) scale(.78)`, offset: .62 },
+    { transform: `translate(${dx}px, ${dy}px) rotate(${sway * 180}deg) scale(.4)`, offset: 1 },
+  ] : [
     { transform: 'translate(0,0) rotate(0deg) scale(1)' },
     { transform: `translate(${dx * .45}px, ${Math.min(dy, 0) - 110}px) rotate(${spin * .5}deg) scale(.78)`, offset: .5 },
     { transform: `translate(${dx}px, ${dy}px) rotate(${spin}deg) scale(.38)` },
-  ], { duration: 620, easing: 'cubic-bezier(.36,.06,.3,1)' }).finished.then(() => {
+  ];
+  const ms = mode === 'para' ? 1150 : mode === 'dive' ? 760 : 620;
+  if (mode === 'dive') trailBubbles(clone, r, dx, dy, ms);
+  return clone.animate(frames, { duration: ms, easing: mode === 'para' ? 'cubic-bezier(.3,.5,.3,1)' : 'cubic-bezier(.36,.06,.3,1)' }).finished.then(() => {
     const ring = document.createElement('div');
     ring.className = 'ring';
     Object.assign(ring.style, { left: (t.left + t.width / 2 - 8) + 'px', top: (t.top + t.height / 2 - 8) + 'px', width: '16px', height: '16px' });
@@ -1763,6 +1897,27 @@ function leapTo(target) {
     });
     return new Promise(res => setTimeout(res, 180));
   });
+}
+
+// A dive leaves a string of bubbles behind it.
+function trailBubbles(clone, r, dx, dy, ms) {
+  const layer = document.createElement('div');
+  layer.className = 'dfx';
+  layer.style.left = (r.left + r.width / 2) + 'px';
+  layer.style.top = (r.top + r.height / 2) + 'px';
+  document.body.appendChild(layer);
+  for (let i = 0; i < 10; i++) {
+    const f = .15 + .8 * (i / 10), sz = rnd(5, 12);
+    const b = document.createElement('div');
+    b.className = 'b bubble';
+    Object.assign(b.style, { width: sz + 'px', height: sz + 'px', left: (dx * f) + 'px', top: (dy * f) + 'px' });
+    layer.appendChild(b);
+    b.animate([{ transform: 'translate(-50%,-50%) scale(.4)', opacity: 0 },
+      { transform: 'translate(-50%,-50%) scale(1)', opacity: .85, offset: .3 },
+      { transform: `translate(-50%,-50%) translate(${rnd(-14, 14)}px, -${rnd(40, 90)}px) scale(1.1)`, opacity: 0 }],
+      { duration: rnd(600, 900), delay: ms * f * .7, easing: 'ease-out' });
+  }
+  setTimeout(() => layer.remove(), ms + 1100);
 }
 
 /* ================= boot ================= */
@@ -1799,12 +1954,14 @@ if (byId[start]) {
 }
 paintDiver();
 renderRack();
+paintLives();
+diver.setAttribute('title', 'Your kit');
 $('ghostBox').checked = !!game.ghost;
 updateHUD();
 queueFocus();
 setInterval(tick, 200);
 addEventListener('scroll', () => { updateHUD(); queueFocus(); }, { passive: true });
-let rt; addEventListener('resize', () => { clearTimeout(rt); placeKit(); rt = setTimeout(relayoutKeepingPlace, 150); });
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(relayoutKeepingPlace, 150); });
 document.fonts && document.fonts.ready.then(relayoutKeepingPlace);
 requestAnimationFrame(frame);
 })();
